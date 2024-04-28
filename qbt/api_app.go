@@ -16,6 +16,8 @@ const (
 )
 
 // Version get qBitTorrent application version
+//
+// Example: v4.6.4
 func (client *Client) Version() (string, error) {
 	if !client.Authenticated {
 		return "", ErrUnauthenticated
@@ -30,6 +32,8 @@ func (client *Client) Version() (string, error) {
 }
 
 // APIVersion get qBitTorrent API version
+//
+// Example: 2.9.3
 func (client *Client) APIVersion() (string, error) {
 	if !client.Authenticated {
 		return "", ErrUnauthenticated
@@ -43,8 +47,8 @@ func (client *Client) APIVersion() (string, error) {
 	return string(resp), nil
 }
 
-// BuildInfo get qBitTorrent build info
-func (client *Client) BuildInfo() (BuildInfo, error) {
+// GetBuildInfo get qBitTorrent build info
+func (client *Client) GetBuildInfo() (BuildInfo, error) {
 	if !client.Authenticated {
 		return BuildInfo{}, ErrUnauthenticated
 	}
@@ -82,8 +86,8 @@ func (client *Client) Shutdown() error {
 	return nil
 }
 
-// Preferences get qBitTorrent preferences
-func (client *Client) Preferences() (Preferences, error) {
+// GetPreferences get qBitTorrent preferences
+func (client *Client) GetPreferences() (Preferences, error) {
 	if !client.Authenticated {
 		return Preferences{}, ErrUnauthenticated
 	}
@@ -129,7 +133,7 @@ func (client *Client) SetPreferences(data Preferences) error {
 	return nil
 }
 
-// DefaultSavePath get default save path
+// DefaultSavePath get default save path of downloaded content
 func (client *Client) DefaultSavePath() (string, error) {
 	if !client.Authenticated {
 		return "", ErrUnauthenticated

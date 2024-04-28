@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-// NewClient creates a connection to qbittorrent and performs requests
+// NewClient creates a new client and is used to perform future requests.
 func NewClient(base string) *Client {
 	c := &Client{}
 
@@ -32,7 +32,7 @@ func NewClient(base string) *Client {
 	return c
 }
 
-// Get will perform a GET request
+// Get will perform a GET request, with parameters.
 func (client *Client) Get(endpoint string, opts map[string]string) (*http.Response, error) {
 	req, err := http.NewRequest(
 		"GET",
@@ -64,6 +64,8 @@ func (client *Client) Get(endpoint string, opts map[string]string) (*http.Respon
 	return resp, nil
 }
 
+// GetResponseBody will perform a GET request with parameters,
+// and directly returns the body of response.
 func (client *Client) GetResponseBody(endpoint string, opts map[string]string) ([]byte, error) {
 	resp, err := client.Get(endpoint, opts)
 	if err != nil {
@@ -84,7 +86,8 @@ func (client *Client) GetResponseBody(endpoint string, opts map[string]string) (
 	return body, nil
 }
 
-// Post will perform a POST request with no content-type specified
+// Post will perform a POST request with application/x-www-form-urlencoded parameters
+// and custom HTTP headers.
 func (client *Client) Post(endpoint string, opts map[string]string, headers map[string]string) (*http.Response, error) {
 	// add optional parameters that the user wants
 	form := url.Values{}
