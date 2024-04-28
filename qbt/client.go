@@ -2,7 +2,6 @@ package qbt
 
 import (
 	"bytes"
-	"crypto/tls"
 	"fmt"
 	wrapper "github.com/pkg/errors"
 	"golang.org/x/net/publicsuffix"
@@ -25,14 +24,8 @@ func NewClient(base string) *Client {
 
 	c.Jar, _ = cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
 
-	proxy, _ := url.Parse("http://localhost:8080")
-	tr := &http.Transport{
-		Proxy:           http.ProxyURL(proxy),
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
 	c.http = &http.Client{
-		Jar:       c.Jar,
-		Transport: tr,
+		Jar: c.Jar,
 	}
 
 	c.Authenticated = false
