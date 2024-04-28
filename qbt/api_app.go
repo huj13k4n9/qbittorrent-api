@@ -53,13 +53,13 @@ func (client *Client) GetBuildInfo() (BuildInfo, error) {
 		return BuildInfo{}, ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(BuildInfoEndpoint, nil)
+	resp, err := client.Get(BuildInfoEndpoint, nil)
 	if err != nil {
 		return BuildInfo{}, wrapper.Wrap(err, "get build info failed")
 	}
 
 	data := BuildInfo{}
-	err = json.Unmarshal(resp, &data)
+	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		return BuildInfo{}, err
 	}
@@ -92,13 +92,13 @@ func (client *Client) GetPreferences() (Preferences, error) {
 		return Preferences{}, ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(GetPreferencesEndpoint, nil)
+	resp, err := client.Get(GetPreferencesEndpoint, nil)
 	if err != nil {
 		return Preferences{}, wrapper.Wrap(err, "get preferences failed")
 	}
 
 	data := Preferences{}
-	err = json.Unmarshal(resp, &data)
+	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		return Preferences{}, err
 	}

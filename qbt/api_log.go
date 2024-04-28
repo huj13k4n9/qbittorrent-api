@@ -25,13 +25,13 @@ func (client *Client) Logs(logLevel uint8, lastKnownID int) ([]MainLog, error) {
 		"critical":      strconv.FormatBool(logLevel&LogCritical != 0),
 	}
 
-	resp, err := client.GetResponseBody(LogEndpoint, params)
+	resp, err := client.Get(LogEndpoint, params)
 	if err != nil {
 		return nil, wrapper.Wrap(err, "get main logs failed")
 	}
 
 	var data []MainLog
-	err = json.Unmarshal(resp, &data)
+	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		return nil, err
 	}
@@ -49,13 +49,13 @@ func (client *Client) PeerLogs(lastKnownID int) ([]PeerLog, error) {
 		"last_known_id": strconv.Itoa(lastKnownID),
 	}
 
-	resp, err := client.GetResponseBody(PeerLogEndpoint, params)
+	resp, err := client.Get(PeerLogEndpoint, params)
 	if err != nil {
 		return nil, wrapper.Wrap(err, "get peer logs failed")
 	}
 
 	var data []PeerLog
-	err = json.Unmarshal(resp, &data)
+	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		return nil, err
 	}
