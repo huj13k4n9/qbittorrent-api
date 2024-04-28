@@ -1,5 +1,13 @@
 package qbt
 
+// Constants of log levels
+const (
+	LogNormal uint8 = 1 << iota
+	LogInfo
+	LogWarning
+	LogCritical
+)
+
 // Constants related to items in preferences
 const (
 	ScanDirsToMonitoredFolder = iota

@@ -171,3 +171,18 @@ type Preferences struct {
 	UPnPLeaseDuration                  int                    `json:"upnp_lease_duration"`
 	UTPTCPMixedMode                    int                    `json:"utp_tcp_mixed_mode"`
 }
+
+type MainLog struct {
+	ID        uint   `json:"id"`
+	Message   string `json:"message"`
+	Timestamp Time   `json:"timestamp"`
+	Type      uint   `json:"type"`
+}
+
+type PeerLog struct {
+	ID        uint   `json:"id"`
+	IP        string `json:"ip"`
+	Timestamp Time   `json:"timestamp"`
+	Blocked   bool   `json:"blocked"`
+	Reason    string `json:"reason"`
+}
