@@ -64,7 +64,7 @@ func (client *Client) Get(endpoint string, opts map[string]string) (*http.Respon
 	return resp, nil
 }
 
-func (client *Client) GetResponseText(endpoint string, opts map[string]string) ([]byte, error) {
+func (client *Client) GetResponseBody(endpoint string, opts map[string]string) ([]byte, error) {
 	resp, err := client.Get(endpoint, opts)
 	if err != nil {
 		return nil, err

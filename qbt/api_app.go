@@ -21,7 +21,7 @@ func (client *Client) Version() (string, error) {
 		return "", ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseText(VersionEndpoint, nil)
+	resp, err := client.GetResponseBody(VersionEndpoint, nil)
 	if err != nil {
 		return "", wrapper.Wrap(err, "get qbittorrent version failed")
 	}
@@ -35,7 +35,7 @@ func (client *Client) APIVersion() (string, error) {
 		return "", ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseText(WebAPIVersionEndpoint, nil)
+	resp, err := client.GetResponseBody(WebAPIVersionEndpoint, nil)
 	if err != nil {
 		return "", wrapper.Wrap(err, "get WebAPI version failed")
 	}
@@ -44,20 +44,20 @@ func (client *Client) APIVersion() (string, error) {
 }
 
 // BuildInfo get qBitTorrent build info
-func (client *Client) BuildInfo() (BuildInfoData, error) {
+func (client *Client) BuildInfo() (BuildInfo, error) {
 	if !client.Authenticated {
-		return BuildInfoData{}, ErrUnauthenticated
+		return BuildInfo{}, ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseText(BuildInfoEndpoint, nil)
+	resp, err := client.GetResponseBody(BuildInfoEndpoint, nil)
 	if err != nil {
-		return BuildInfoData{}, wrapper.Wrap(err, "get build info failed")
+		return BuildInfo{}, wrapper.Wrap(err, "get build info failed")
 	}
 
-	data := BuildInfoData{}
+	data := BuildInfo{}
 	err = json.Unmarshal(resp, &data)
 	if err != nil {
-		return BuildInfoData{}, err
+		return BuildInfo{}, err
 	}
 
 	return data, nil
@@ -83,27 +83,27 @@ func (client *Client) Shutdown() error {
 }
 
 // Preferences get qBitTorrent preferences
-func (client *Client) Preferences() (PreferencesData, error) {
+func (client *Client) Preferences() (Preferences, error) {
 	if !client.Authenticated {
-		return PreferencesData{}, ErrUnauthenticated
+		return Preferences{}, ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseText(GetPreferencesEndpoint, nil)
+	resp, err := client.GetResponseBody(GetPreferencesEndpoint, nil)
 	if err != nil {
-		return PreferencesData{}, wrapper.Wrap(err, "get preferences failed")
+		return Preferences{}, wrapper.Wrap(err, "get preferences failed")
 	}
 
-	data := PreferencesData{}
+	data := Preferences{}
 	err = json.Unmarshal(resp, &data)
 	if err != nil {
-		return PreferencesData{}, err
+		return Preferences{}, err
 	}
 
 	return data, nil
 }
 
 // SetPreferences set qBitTorrent preferences
-func (client *Client) SetPreferences(data PreferencesData) error {
+func (client *Client) SetPreferences(data Preferences) error {
 	if !client.Authenticated {
 		return ErrUnauthenticated
 	}
@@ -135,7 +135,7 @@ func (client *Client) DefaultSavePath() (string, error) {
 		return "", ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseText(DefaultSavePathEndpoint, nil)
+	resp, err := client.GetResponseBody(DefaultSavePathEndpoint, nil)
 	if err != nil {
 		return "", wrapper.Wrap(err, "get default save path failed")
 	}

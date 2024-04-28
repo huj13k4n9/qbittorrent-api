@@ -5,69 +5,6 @@ import (
 	"net/http"
 )
 
-const (
-	ScanDirsToMonitoredFolder = iota
-	ScanDirsToDefaultPath
-)
-
-const (
-	SchedulerEveryDay = iota
-	SchedulerEveryWeekday
-	SchedulerEveryWeekend
-	SchedulerEveryMonday
-	SchedulerEveryTuesday
-	SchedulerEveryWednesday
-	SchedulerEveryThursday
-	SchedulerEveryFriday
-	SchedulerEverySaturday
-	SchedulerEverySunday
-)
-
-const (
-	EncryptionPreferred = iota
-	EncryptionForcedOn
-	EncryptionForcedOff
-)
-
-const (
-	ProxyTypeDisabled = "None"
-	ProxyTypeHTTP     = "HTTP"
-	ProxyTypeSOCKS5   = "SOCKS5"
-	ProxyTypeSOCKS4   = "SOCKS4"
-)
-
-const (
-	DynamicDNSServiceDyDNS = iota
-	DynamicDNSServiceNOIP
-)
-
-const (
-	MaxRatioActPause = iota
-	MaxRatioActRemove
-)
-
-const (
-	BitTorrentProtocolTCPAndUTP = iota
-	BitTorrentProtocolTCP
-	BitTorrentProtocolUTP
-)
-
-const (
-	UploadChokingAlgorithmRoundRobin = iota
-	UploadChokingAlgorithmFastestUpload
-	UploadChokingAlgorithmAntiLeech
-)
-
-const (
-	UploadSlotsFixed = iota
-	UploadSlotsUploadRateBased
-)
-
-const (
-	UTPTCPMixedModePreferTCP = iota
-	UTPTCPMixedModePeerProportional
-)
-
 var ErrBadResponse = errors.New("received bad response")
 var ErrUnauthenticated = errors.New("unauthenticated request")
 
@@ -78,7 +15,7 @@ type Client struct {
 	Jar           http.CookieJar
 }
 
-type BuildInfoData struct {
+type BuildInfo struct {
 	QTVersion         string `json:"qt"`
 	LibTorrentVersion string `json:"libtorrent"`
 	BoostVersion      string `json:"boost"`
@@ -86,7 +23,7 @@ type BuildInfoData struct {
 	Bitness           uint   `json:"bitness"`
 }
 
-type PreferencesData struct {
+type Preferences struct {
 	Locale                             string                 `json:"locale"`
 	CreateSubfolderEnabled             bool                   `json:"create_subfolder_enabled"`
 	StartPausedEnabled                 bool                   `json:"start_paused_enabled"`
