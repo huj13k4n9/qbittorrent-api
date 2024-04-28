@@ -23,3 +23,7 @@ func (t *Time) UnmarshalJSON(bytes []byte) error {
 	*t = Time(time.Unix(timestamp, 0))
 	return nil
 }
+
+func (p Peer) String() string {
+	return fmt.Sprintf("%s:%d", p.IP, p.Port)
+}

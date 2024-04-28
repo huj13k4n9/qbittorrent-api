@@ -11,12 +11,43 @@ type Client struct {
 	Jar           http.CookieJar
 }
 
+type Peer struct {
+	IP   string
+	Port uint
+}
+
 type BuildInfo struct {
 	QTVersion         string `json:"qt"`
 	LibTorrentVersion string `json:"libtorrent"`
 	BoostVersion      string `json:"boost"`
 	OpenSSLVersion    string `json:"openssl"`
 	Bitness           uint   `json:"bitness"`
+}
+
+type MainLog struct {
+	ID        uint   `json:"id"`
+	Message   string `json:"message"`
+	Timestamp Time   `json:"timestamp"`
+	Type      uint   `json:"type"`
+}
+
+type PeerLog struct {
+	ID        uint   `json:"id"`
+	IP        string `json:"ip"`
+	Timestamp Time   `json:"timestamp"`
+	Blocked   bool   `json:"blocked"`
+	Reason    string `json:"reason"`
+}
+
+type TransferInfo struct {
+	ConnectionStatus  string `json:"connection_status"`
+	DHTNodes          uint   `json:"dht_nodes"`
+	DownloadInfoData  uint   `json:"dl_info_data"`
+	DownloadInfoSpeed uint   `json:"dl_info_speed"`
+	DownloadRateLimit uint   `json:"dl_rate_limit"`
+	UploadInfoData    uint   `json:"up_info_data"`
+	UploadInfoSpeed   uint   `json:"up_info_speed"`
+	UploadRateLimit   uint   `json:"up_rate_limit"`
 }
 
 type Preferences struct {
@@ -166,19 +197,4 @@ type Preferences struct {
 	UploadSlotsBehavior                int                    `json:"upload_slots_behavior"`
 	UPnPLeaseDuration                  int                    `json:"upnp_lease_duration"`
 	UTPTCPMixedMode                    int                    `json:"utp_tcp_mixed_mode"`
-}
-
-type MainLog struct {
-	ID        uint   `json:"id"`
-	Message   string `json:"message"`
-	Timestamp Time   `json:"timestamp"`
-	Type      uint   `json:"type"`
-}
-
-type PeerLog struct {
-	ID        uint   `json:"id"`
-	IP        string `json:"ip"`
-	Timestamp Time   `json:"timestamp"`
-	Blocked   bool   `json:"blocked"`
-	Reason    string `json:"reason"`
 }

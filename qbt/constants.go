@@ -8,6 +8,19 @@ const (
 	LogCritical
 )
 
+// Constants of connection status of qBitTorrent
+const (
+	ConnectionStatusConnected    = "connected"
+	ConnectionStatusDisconnected = "disconnected"
+	ConnectionStatusFirewalled   = "firewalled"
+)
+
+// Constants related to the status of alternative speed limits
+const (
+	AlternativeSpeedLimitsDisabled = iota
+	AlternativeSpeedLimitsEnabled
+)
+
 // Constants related to items in preferences
 const (
 	ScanDirsToMonitoredFolder = iota
