@@ -1,12 +1,8 @@
 package qbt
 
 import (
-	"errors"
 	"net/http"
 )
-
-var ErrBadResponse = errors.New("received bad response")
-var ErrUnauthenticated = errors.New("unauthenticated request")
 
 type Client struct {
 	http          *http.Client
