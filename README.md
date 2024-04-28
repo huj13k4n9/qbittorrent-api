@@ -8,7 +8,9 @@ It'll be best if you upgrade your client to the latest version.
 
 # Installation
 
-TODO
+```bash
+go get github.com/huj13k4n9/qbittorrent-api/qbt
+```
 
 # Simple Usage
 
