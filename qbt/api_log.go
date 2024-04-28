@@ -2,6 +2,7 @@ package qbt
 
 import (
 	"encoding/json"
+	"github.com/huj13k4n9/qbittorrent-api/consts"
 	wrapper "github.com/pkg/errors"
 	"strconv"
 )
@@ -19,10 +20,10 @@ func (client *Client) Logs(logLevel uint8, lastKnownID int) ([]MainLog, error) {
 
 	params := map[string]string{
 		"last_known_id": strconv.Itoa(lastKnownID),
-		"normal":        strconv.FormatBool(logLevel&LogNormal != 0),
-		"info":          strconv.FormatBool(logLevel&LogInfo != 0),
-		"warning":       strconv.FormatBool(logLevel&LogWarning != 0),
-		"critical":      strconv.FormatBool(logLevel&LogCritical != 0),
+		"normal":        strconv.FormatBool(logLevel&consts.LogNormal != 0),
+		"info":          strconv.FormatBool(logLevel&consts.LogInfo != 0),
+		"warning":       strconv.FormatBool(logLevel&consts.LogWarning != 0),
+		"critical":      strconv.FormatBool(logLevel&consts.LogCritical != 0),
 	}
 
 	resp, err := client.Get(LogEndpoint, params)

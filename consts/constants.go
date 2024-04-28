@@ -1,4 +1,4 @@
-package qbt
+package consts
 
 // Constants of log levels
 const (
