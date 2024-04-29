@@ -15,6 +15,12 @@ const (
 	ConnectionStatusFirewalled   = "firewalled"
 )
 
+// Constants of search status of qBittorrent
+const (
+	SearchStatusRunning = "Running"
+	SearchStatusStopped = "Stopped"
+)
+
 // Constants related to the status of alternative speed limits
 const (
 	AlternativeSpeedLimitsDisabled = iota

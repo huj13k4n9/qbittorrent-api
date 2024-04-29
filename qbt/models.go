@@ -50,6 +50,40 @@ type TransferInfo struct {
 	UploadRateLimit   uint   `json:"up_rate_limit"`
 }
 
+type SearchStatus struct {
+	ID     uint   `json:"id"`
+	Status string `json:"status"`
+	Total  uint   `json:"total"`
+}
+
+type SearchResponse struct {
+	Results []SearchResult `json:"results"`
+	Status  string         `json:"status"`
+	Total   uint           `json:"total"`
+}
+
+type SearchResult struct {
+	DescriptionLink  string `json:"descrLink"`
+	FileName         string `json:"fileName"`
+	FileSize         int    `json:"fileSize"`
+	FileURL          string `json:"fileUrl"`
+	NumberOfLeechers uint   `json:"nbLeechers"`
+	NumberOfSeeders  uint   `json:"nbSeeders"`
+	SiteURL          string `json:"siteUrl"`
+}
+
+type SearchPluginResult struct {
+	Enabled             bool   `json:"enabled"`
+	FullName            string `json:"fullName"`
+	Name                string `json:"name"`
+	SupportedCategories []struct {
+		Id   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"supportedCategories"`
+	Url     string `json:"url"`
+	Version string `json:"version"`
+}
+
 type Preferences struct {
 	Locale                             string                 `json:"locale"`
 	CreateSubfolderEnabled             bool                   `json:"create_subfolder_enabled"`
