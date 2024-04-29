@@ -97,7 +97,7 @@ func (client *Client) Torrents(options *TorrentListRequest) ([]TorrentInfo, erro
 }
 
 // TorrentProperties method is used to get generic properties of specified torrent.
-// Pass hash of torrent as parameter so that server can identify the torrent.
+// Pass hash of torrents as parameter so that server can identify them.
 //
 // Note: -1 is returned if the type of the property is integer but its value is not known.
 func (client *Client) TorrentProperties(hash string) (TorrentProperties, error) {
@@ -119,7 +119,7 @@ func (client *Client) TorrentProperties(hash string) (TorrentProperties, error) 
 }
 
 // TorrentTrackers method is used to get trackers of specified torrent.
-// Pass hash of torrent as parameter so that server can identify the torrent.
+// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) TorrentTrackers(hash string) ([]Tracker, error) {
 	resp, err := client.RequestAndHandleError(
 		"GET", consts.GetTorrentTrackersEndpoint, map[string]string{"hash": hash}, nil,
@@ -139,7 +139,7 @@ func (client *Client) TorrentTrackers(hash string) ([]Tracker, error) {
 }
 
 // TorrentWebSeeds method is used to get web seeds of specified torrent.
-// Pass hash of torrent as parameter so that server can identify the torrent.
+// Pass hash of torrents as parameter so that server can identify them.
 // Return URLs of web seeds as string.
 func (client *Client) TorrentWebSeeds(hash string) ([]string, error) {
 	resp, err := client.RequestAndHandleError(
@@ -168,7 +168,7 @@ func (client *Client) TorrentWebSeeds(hash string) ([]string, error) {
 
 // TorrentContents method is used to get web seeds of specified torrent.
 //
-// Pass hash of torrent as parameter so that server can identify the torrent.
+// Pass hash of torrents as parameter so that server can identify them.
 // `indexes` is optional, which represents what indexes do you want to obtain
 // file information with.
 //
@@ -206,7 +206,7 @@ func (client *Client) TorrentContents(hash string, indexes []uint) ([]TorrentFil
 
 // TorrentPieceStates method is used to get pieces' states of specified torrent.
 //
-// Pass hash of torrent as parameter so that server can identify the torrent.
+// Pass hash of torrents as parameter so that server can identify them.
 //
 // Return an array of states (integers) of all pieces (in order) of a specific torrent
 func (client *Client) TorrentPieceStates(hash string) ([]uint, error) {
@@ -229,7 +229,7 @@ func (client *Client) TorrentPieceStates(hash string) ([]uint, error) {
 
 // TorrentPieceHashes method is used to get pieces' hashes of specified torrent.
 //
-// Pass hash of torrent as parameter so that server can identify the torrent.
+// Pass hash of torrents as parameter so that server can identify them.
 //
 // Return an array of hashes (strings) of all pieces (in order) of a specific torrent
 func (client *Client) TorrentPieceHashes(hash string) ([]string, error) {
@@ -248,4 +248,217 @@ func (client *Client) TorrentPieceHashes(hash string) ([]string, error) {
 	}
 
 	return data, nil
+}
+
+// PauseTorrents method is used to pause specified torrent(s).
+// Pass hash of torrents as parameter so that server can identify them.
+func (client *Client) PauseTorrents(hashes []string) error {
+	_, err := client.RequestAndHandleError(
+		"POST", consts.PauseTorrentsEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
+		nil, map[string]string{"!200": "pause torrents failed"})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ResumeTorrents method is used to resume specified torrent(s).
+// Pass hash of torrents as parameter so that server can identify them.
+func (client *Client) ResumeTorrents(hashes []string) error {
+	_, err := client.RequestAndHandleError(
+		"POST", consts.ResumeTorrentsEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
+		nil, map[string]string{"!200": "resume torrents failed"})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteTorrents method is used to delete specified torrent(s).
+// Pass hash of torrents as parameter so that server can identify them.
+func (client *Client) DeleteTorrents(hashes []string, deleteFiles bool) error {
+	_, err := client.RequestAndHandleError(
+		"POST", consts.DeleteTorrentsEndpoint,
+		map[string]string{"hashes": strings.Join(hashes, "|"), "deleteFiles": strconv.FormatBool(deleteFiles)},
+		nil, map[string]string{"!200": "delete torrents failed"})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// RecheckTorrents method is used to recheck specified torrent(s).
+// Pass hash of torrents as parameter so that server can identify them.
+func (client *Client) RecheckTorrents(hashes []string) error {
+	_, err := client.RequestAndHandleError(
+		"POST", consts.RecheckTorrentsEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
+		nil, map[string]string{"!200": "recheck torrents failed"})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ReannounceTorrents method is used to reannounce specified torrent(s).
+// Pass hash of torrents as parameter so that server can identify them.
+func (client *Client) ReannounceTorrents(hashes []string) error {
+	_, err := client.RequestAndHandleError(
+		"POST", consts.ReannounceTorrentsEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
+		nil, map[string]string{"!200": "reannounce torrents failed"})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// AddTrackersToTorrent method is used to add trackers to specified torrent.
+// Pass hash of torrents as parameter so that server can identify them.
+func (client *Client) AddTrackersToTorrent(hash string, trackers []string) error {
+	_, err := client.RequestAndHandleError(
+		"POST", consts.AddTrackersToTorrentEndpoint, map[string]string{"hash": hash, "trackers": strings.Join(trackers, "\n")},
+		nil, map[string]string{"404": "torrent hash was not found", "!200": "add trackers to torrent failed"})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// RemoveTrackersToTorrent method is used to remove trackers to specified torrent.
+// Pass hash of torrents as parameter so that server can identify them.
+func (client *Client) RemoveTrackersToTorrent(hash string, trackers []string) error {
+	_, err := client.RequestAndHandleError(
+		"POST", consts.RemoveTrackersEndpoint, map[string]string{"hash": hash, "trackers": strings.Join(trackers, "|")},
+		nil, map[string]string{
+			"404":  "torrent hash was not found",
+			"409":  "specified trackers not found",
+			"!200": "remove trackers to torrent failed",
+		})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// EditTrackersToTorrent method is used to edit trackers to specified torrent.
+// Pass hash of torrents as parameter so that server can identify them.
+func (client *Client) EditTrackersToTorrent(hash string, origUrl string, newUrl string) error {
+	_, err := client.RequestAndHandleError(
+		"POST", consts.EditTrackersEndpoint, map[string]string{"hash": hash, "origUrl": origUrl, "newUrl": newUrl},
+		nil, map[string]string{
+			"400":  "newUrl is not a valid URL",
+			"404":  "torrent hash was not found",
+			"409":  "newUrl already exists for the torrent or origUrl was not found",
+			"!200": "edit trackers to torrent failed",
+		})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// AddPeers method is used to add peers to specified torrent(s).
+// Pass hash of torrents as parameter so that server can identify them.
+func (client *Client) AddPeers(hashes []string, peers []Peer) error {
+	var peerString []string
+	for _, peer := range peers {
+		peerString = append(peerString, peer.String())
+	}
+
+	_, err := client.RequestAndHandleError(
+		"POST", consts.AddPeersEndpoint,
+		map[string]string{"hashes": strings.Join(hashes, "|"), "peers": strings.Join(hashes, "|")},
+		nil, map[string]string{
+			"400":  "none of the supplied peers are valid",
+			"!200": "add peers to torrent(s) failed",
+		})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// IncreaseTorrentPriority method is used to increase torrent priority.
+// Pass hash of torrents as parameter so that server can identify them.
+func (client *Client) IncreaseTorrentPriority(hashes []string) error {
+	_, err := client.RequestAndHandleError(
+		"POST", consts.IncreaseTorrentPriorityEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
+		nil, map[string]string{
+			"409":  "torrent queueing is not enabled",
+			"!200": "increase torrent priority failed",
+		})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DecreaseTorrentPriority method is used to decrease torrent priority.
+// Pass hash of torrents as parameter so that server can identify them.
+func (client *Client) DecreaseTorrentPriority(hashes []string) error {
+	_, err := client.RequestAndHandleError(
+		"POST", consts.DecreaseTorrentPriorityEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
+		nil, map[string]string{
+			"409":  "torrent queueing is not enabled",
+			"!200": "decrease torrent priority failed",
+		})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MaximalTorrentPriority method is used to maximize torrent priority.
+// Pass hash of torrents as parameter so that server can identify them.
+func (client *Client) MaximalTorrentPriority(hashes []string) error {
+	_, err := client.RequestAndHandleError(
+		"POST", consts.MaximalTorrentPriorityEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
+		nil, map[string]string{
+			"409":  "torrent queueing is not enabled",
+			"!200": "maximize torrent priority failed",
+		})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MinimalTorrentPriority method is used to minimize torrent priority.
+// Pass hash of torrents as parameter so that server can identify them.
+func (client *Client) MinimalTorrentPriority(hashes []string) error {
+	_, err := client.RequestAndHandleError(
+		"POST", consts.MinimalTorrentPriorityEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
+		nil, map[string]string{
+			"409":  "torrent queueing is not enabled",
+			"!200": "minimize torrent priority failed",
+		})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
