@@ -2,17 +2,8 @@ package qbt
 
 import (
 	"encoding/json"
+	"github.com/huj13k4n9/qbittorrent-api/consts"
 	wrapper "github.com/pkg/errors"
-)
-
-const (
-	VersionEndpoint         = "app/version"
-	WebAPIVersionEndpoint   = "app/webapiVersion"
-	BuildInfoEndpoint       = "app/buildInfo"
-	ShutdownEndpoint        = "app/shutdown"
-	GetPreferencesEndpoint  = "app/preferences"
-	SetPreferencesEndpoint  = "app/setPreferences"
-	DefaultSavePathEndpoint = "app/defaultSavePath"
 )
 
 // Version get qBitTorrent application version
@@ -23,7 +14,7 @@ func (client *Client) Version() (string, error) {
 		return "", ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(VersionEndpoint, nil)
+	resp, err := client.GetResponseBody(consts.VersionEndpoint, nil)
 	if err != nil {
 		return "", wrapper.Wrap(err, "get qbittorrent version failed")
 	}
@@ -39,7 +30,7 @@ func (client *Client) APIVersion() (string, error) {
 		return "", ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(WebAPIVersionEndpoint, nil)
+	resp, err := client.GetResponseBody(consts.WebAPIVersionEndpoint, nil)
 	if err != nil {
 		return "", wrapper.Wrap(err, "get WebAPI version failed")
 	}
@@ -53,7 +44,7 @@ func (client *Client) GetBuildInfo() (BuildInfo, error) {
 		return BuildInfo{}, ErrUnauthenticated
 	}
 
-	resp, err := client.Get(BuildInfoEndpoint, nil)
+	resp, err := client.Get(consts.BuildInfoEndpoint, nil)
 	if err != nil {
 		return BuildInfo{}, wrapper.Wrap(err, "get build info failed")
 	}
@@ -73,7 +64,7 @@ func (client *Client) Shutdown() error {
 		return ErrUnauthenticated
 	}
 
-	resp, err := client.Post(ShutdownEndpoint, nil, nil)
+	resp, err := client.Post(consts.ShutdownEndpoint, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -92,7 +83,7 @@ func (client *Client) GetPreferences() (Preferences, error) {
 		return Preferences{}, ErrUnauthenticated
 	}
 
-	resp, err := client.Get(GetPreferencesEndpoint, nil)
+	resp, err := client.Get(consts.GetPreferencesEndpoint, nil)
 	if err != nil {
 		return Preferences{}, wrapper.Wrap(err, "get preferences failed")
 	}
@@ -118,7 +109,7 @@ func (client *Client) SetPreferences(data Preferences) error {
 	}
 
 	resp, err := client.Post(
-		SetPreferencesEndpoint,
+		consts.SetPreferencesEndpoint,
 		map[string]string{"json": string(bytes)},
 		nil,
 	)
@@ -139,7 +130,7 @@ func (client *Client) DefaultSavePath() (string, error) {
 		return "", ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(DefaultSavePathEndpoint, nil)
+	resp, err := client.GetResponseBody(consts.DefaultSavePathEndpoint, nil)
 	if err != nil {
 		return "", wrapper.Wrap(err, "get default save path failed")
 	}

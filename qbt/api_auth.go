@@ -1,19 +1,15 @@
 package qbt
 
 import (
+	"github.com/huj13k4n9/qbittorrent-api/consts"
 	wrapper "github.com/pkg/errors"
 	"net/url"
-)
-
-const (
-	LoginEndpoint  = "auth/login"
-	LogoutEndpoint = "auth/logout"
 )
 
 // Login perform login request to server
 func (client *Client) Login(username, password string) (success bool, err error) {
 	resp, err := client.Post(
-		LoginEndpoint,
+		consts.LoginEndpoint,
 		map[string]string{"username": username, "password": password},
 		map[string]string{
 			"Origin": client.URL, "Referer": client.URL,
@@ -47,7 +43,7 @@ func (client *Client) Logout() error {
 		return ErrUnauthenticated
 	}
 
-	resp, err := client.Post(LogoutEndpoint, nil, nil)
+	resp, err := client.Post(consts.LogoutEndpoint, nil, nil)
 	if err != nil {
 		return err
 	}

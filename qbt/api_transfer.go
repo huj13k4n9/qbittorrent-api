@@ -2,29 +2,19 @@ package qbt
 
 import (
 	"encoding/json"
+	"github.com/huj13k4n9/qbittorrent-api/consts"
 	wrapper "github.com/pkg/errors"
 	"strconv"
 	"strings"
 )
 
-const (
-	GetGlobalTransferInfoEndpoint  = "transfer/info"
-	GetSpeedLimitsModeEndpoint     = "transfer/speedLimitsMode"
-	ToggleSpeedLimitsModeEndpoint  = "transfer/toggleSpeedLimitsMode"
-	GetGlobalDownloadLimitEndpoint = "transfer/downloadLimit"
-	SetGlobalDownloadLimitEndpoint = "transfer/setDownloadLimit"
-	GetGlobalUploadLimitEndpoint   = "transfer/uploadLimit"
-	SetGlobalUploadLimitEndpoint   = "transfer/setUploadLimit"
-	BanPeersEndpoint               = "transfer/banPeers"
-)
-
-// GetTransferInfo get global transfer info of qBitTorrent.
+// GetTransferInfo get global transfer info of qBittorrent.
 func (client *Client) GetTransferInfo() (TransferInfo, error) {
 	if !client.Authenticated {
 		return TransferInfo{}, ErrUnauthenticated
 	}
 
-	resp, err := client.Get(GetGlobalTransferInfoEndpoint, nil)
+	resp, err := client.Get(consts.GetGlobalTransferInfoEndpoint, nil)
 	if err != nil {
 		return TransferInfo{}, wrapper.Wrap(err, "get transfer info failed")
 	}
@@ -48,7 +38,7 @@ func (client *Client) SpeedLimitsMode() (uint, error) {
 		return 0, ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(GetSpeedLimitsModeEndpoint, nil)
+	resp, err := client.GetResponseBody(consts.GetSpeedLimitsModeEndpoint, nil)
 	if err != nil {
 		return 0, wrapper.Wrap(err, "get speed limits mode failed")
 	}
@@ -71,7 +61,7 @@ func (client *Client) ToggleSpeedLimitsMode() error {
 		return ErrUnauthenticated
 	}
 
-	resp, err := client.Post(ToggleSpeedLimitsModeEndpoint, nil, nil)
+	resp, err := client.Post(consts.ToggleSpeedLimitsModeEndpoint, nil, nil)
 	if err != nil {
 		return wrapper.Wrap(err, "toggle speed limits mode failed")
 	}
@@ -98,7 +88,7 @@ func (client *Client) GetGlobalDownloadLimit() (uint, error) {
 		return 0, ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(GetGlobalDownloadLimitEndpoint, nil)
+	resp, err := client.GetResponseBody(consts.GetGlobalDownloadLimitEndpoint, nil)
 	if err != nil {
 		return 0, wrapper.Wrap(err, "get global download limit failed")
 	}
@@ -126,7 +116,7 @@ func (client *Client) GetGlobalUploadLimit() (uint, error) {
 		return 0, ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(GetGlobalUploadLimitEndpoint, nil)
+	resp, err := client.GetResponseBody(consts.GetGlobalUploadLimitEndpoint, nil)
 	if err != nil {
 		return 0, wrapper.Wrap(err, "get global upload limit failed")
 	}
@@ -153,9 +143,10 @@ func (client *Client) SetGlobalDownloadLimit(limit uint) error {
 		return ErrUnauthenticated
 	}
 
-	resp, err := client.Post(SetGlobalDownloadLimitEndpoint, map[string]string{
+	resp, err := client.Post(consts.SetGlobalDownloadLimitEndpoint, map[string]string{
 		"limit": strconv.Itoa(int(limit)),
 	}, nil)
+
 	if err != nil {
 		return wrapper.Wrap(err, "set global download limit failed")
 	}
@@ -181,9 +172,10 @@ func (client *Client) SetGlobalUploadLimit(limit uint) error {
 		return ErrUnauthenticated
 	}
 
-	resp, err := client.Post(SetGlobalUploadLimitEndpoint, map[string]string{
+	resp, err := client.Post(consts.SetGlobalUploadLimitEndpoint, map[string]string{
 		"limit": strconv.Itoa(int(limit)),
 	}, nil)
+
 	if err != nil {
 		return wrapper.Wrap(err, "set global upload limit failed")
 	}
@@ -211,9 +203,10 @@ func (client *Client) BanPeers(peers []Peer) error {
 	}
 
 	reqParam := strings.Join(peerStrings, "|")
-	resp, err := client.Post(BanPeersEndpoint, map[string]string{
+	resp, err := client.Post(consts.BanPeersEndpoint, map[string]string{
 		"peers": reqParam,
 	}, nil)
+
 	if err != nil {
 		return wrapper.Wrap(err, "ban peers failed")
 	}
