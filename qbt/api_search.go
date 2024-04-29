@@ -93,10 +93,8 @@ func (client *Client) GetSearchStatus(id uint) ([]SearchStatus, error) {
 		return nil, ErrUnauthenticated
 	}
 
-	var params map[string]string
-	if id == 0 {
-		params = nil
-	} else {
+	params := make(map[string]string)
+	if id != 0 {
 		params["id"] = strconv.FormatUint(uint64(id), 10)
 	}
 
@@ -135,8 +133,7 @@ func (client *Client) GetSearchResults(id uint, limit int, offset int) (SearchRe
 		return SearchResponse{}, ErrUnauthenticated
 	}
 
-	var params map[string]string
-
+	params := make(map[string]string)
 	params["id"] = strconv.FormatUint(uint64(id), 10)
 	if limit > 0 {
 		params["limit"] = strconv.Itoa(limit)
