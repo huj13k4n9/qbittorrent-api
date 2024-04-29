@@ -72,7 +72,7 @@ func (client *Client) GetResponseBody(endpoint string, opts map[string]string) (
 		return nil, err
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return nil, ErrBadResponse
 	}
 

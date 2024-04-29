@@ -3,6 +3,7 @@ package qbt
 import (
 	"github.com/huj13k4n9/qbittorrent-api/consts"
 	wrapper "github.com/pkg/errors"
+	"net/http"
 	"net/url"
 )
 
@@ -20,7 +21,7 @@ func (client *Client) Login(username, password string) (success bool, err error)
 	}
 
 	switch resp.StatusCode {
-	case 200:
+	case http.StatusOK:
 		if cookies := resp.Cookies(); len(cookies) > 0 {
 			cookieURL, _ := url.Parse(client.URL)
 			client.Jar.SetCookies(cookieURL, cookies)
@@ -30,7 +31,7 @@ func (client *Client) Login(username, password string) (success bool, err error)
 		client.http.Jar = client.Jar
 		client.Authenticated = true
 		return true, nil
-	case 403:
+	case http.StatusForbidden:
 		return false, wrapper.Wrap(ErrBadResponse, "user's IP is banned for too many failed login attempts")
 	default:
 		return false, wrapper.Wrap(ErrBadResponse, "login failed")
@@ -48,7 +49,7 @@ func (client *Client) Logout() error {
 		return err
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return wrapper.Wrap(ErrBadResponse, "logout failed")
 	}
 

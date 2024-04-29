@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/huj13k4n9/qbittorrent-api/consts"
 	wrapper "github.com/pkg/errors"
+	"net/http"
 	"strconv"
 	"strings"
 )
@@ -66,7 +67,7 @@ func (client *Client) ToggleSpeedLimitsMode() error {
 		return wrapper.Wrap(err, "toggle speed limits mode failed")
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return wrapper.Wrap(ErrBadResponse, "toggle speed limits mode failed")
 	}
 
@@ -151,7 +152,7 @@ func (client *Client) SetGlobalDownloadLimit(limit uint) error {
 		return wrapper.Wrap(err, "set global download limit failed")
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return wrapper.Wrap(ErrBadResponse, "set global download limit failed")
 	}
 
@@ -180,7 +181,7 @@ func (client *Client) SetGlobalUploadLimit(limit uint) error {
 		return wrapper.Wrap(err, "set global upload limit failed")
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return wrapper.Wrap(ErrBadResponse, "set global upload limit failed")
 	}
 
@@ -211,7 +212,7 @@ func (client *Client) BanPeers(peers []Peer) error {
 		return wrapper.Wrap(err, "ban peers failed")
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return wrapper.Wrap(ErrBadResponse, "ban peers failed")
 	}
 

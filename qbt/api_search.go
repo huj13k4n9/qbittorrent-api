@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/huj13k4n9/qbittorrent-api/consts"
 	wrapper "github.com/pkg/errors"
+	"net/http"
 	"strconv"
 	"strings"
 )
@@ -33,9 +34,9 @@ func (client *Client) StartSearch(pattern string, plugins []string, category str
 	}
 
 	switch resp.StatusCode {
-	case 200:
+	case http.StatusOK:
 		break
-	case 409:
+	case http.StatusConflict:
 		return 0, wrapper.Wrap(ErrBadResponse, "user has reached the limit of max running searches")
 	default:
 		return 0, wrapper.Wrap(ErrBadResponse, "start search failed")
@@ -73,9 +74,9 @@ func (client *Client) StopSearch(id uint) error {
 	}
 
 	switch resp.StatusCode {
-	case 200:
+	case http.StatusOK:
 		return nil
-	case 404:
+	case http.StatusNotFound:
 		return wrapper.Wrap(ErrBadResponse, "search job was not found")
 	default:
 		return wrapper.Wrap(ErrBadResponse, "stop search failed")
@@ -104,9 +105,9 @@ func (client *Client) GetSearchStatus(id uint) ([]SearchStatus, error) {
 	}
 
 	switch resp.StatusCode {
-	case 200:
+	case http.StatusOK:
 		break
-	case 404:
+	case http.StatusNotFound:
 		return nil, wrapper.Wrap(ErrBadResponse, "search job was not found")
 	default:
 		return nil, wrapper.Wrap(ErrBadResponse, "get search status failed")
@@ -149,11 +150,11 @@ func (client *Client) GetSearchResults(id uint, limit int, offset int) (SearchRe
 	}
 
 	switch resp.StatusCode {
-	case 200:
+	case http.StatusOK:
 		break
-	case 404:
+	case http.StatusNotFound:
 		return SearchResponse{}, wrapper.Wrap(ErrBadResponse, "search job was not found")
-	case 409:
+	case http.StatusConflict:
 		return SearchResponse{}, wrapper.Wrap(ErrBadResponse, "offset is too large, or too small")
 	default:
 		return SearchResponse{}, wrapper.Wrap(ErrBadResponse, "get search results failed")
@@ -184,9 +185,9 @@ func (client *Client) DeleteSearch(id uint) error {
 	}
 
 	switch resp.StatusCode {
-	case 200:
+	case http.StatusOK:
 		return nil
-	case 404:
+	case http.StatusNotFound:
 		return wrapper.Wrap(ErrBadResponse, "search job was not found")
 	default:
 		return wrapper.Wrap(ErrBadResponse, "delete search failed")
@@ -234,7 +235,7 @@ func (client *Client) InstallPlugins(sources []string) error {
 		return err
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return wrapper.Wrap(ErrBadResponse, "install search plugins failed")
 	}
 	return nil
@@ -256,7 +257,7 @@ func (client *Client) UninstallPlugins(names []string) error {
 		return err
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return wrapper.Wrap(ErrBadResponse, "uninstall search plugins failed")
 	}
 	return nil
@@ -279,7 +280,7 @@ func (client *Client) EnablePlugins(names []string, enable bool) error {
 		return err
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return wrapper.Wrap(ErrBadResponse, "enable search plugins failed")
 	}
 	return nil
@@ -297,7 +298,7 @@ func (client *Client) UpdatePlugins() error {
 		return wrapper.Wrap(err, "update search plugins failed")
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return wrapper.Wrap(ErrBadResponse, "update search plugins failed")
 	}
 	return nil

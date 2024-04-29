@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/huj13k4n9/qbittorrent-api/consts"
 	wrapper "github.com/pkg/errors"
+	"net/http"
 )
 
 // Version get qBittorrent application version
@@ -69,7 +70,7 @@ func (client *Client) Shutdown() error {
 		return err
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return wrapper.Wrap(ErrBadResponse, "shutdown failed")
 	}
 
@@ -117,7 +118,7 @@ func (client *Client) SetPreferences(data Preferences) error {
 		return err
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return wrapper.Wrap(ErrBadResponse, "set preferences failed")
 	}
 
