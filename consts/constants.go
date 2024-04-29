@@ -64,6 +64,14 @@ const (
 	TrackerContactedButNotWorking
 )
 
+// Constants of torrent file priority
+const (
+	FilePriorityDontDownload = 0
+	FilePriorityNormal       = 1
+	FilePriorityHigh         = 6
+	FilePriorityMax          = 7
+)
+
 // Constants of connection status of qBittorrent
 const (
 	ConnectionStatusConnected    = "connected"

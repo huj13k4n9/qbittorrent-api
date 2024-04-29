@@ -204,6 +204,17 @@ type TorrentProperties struct {
 	UploadSpeedAvg         int     `json:"up_speed_avg"`
 }
 
+type TorrentFileProperties struct {
+	Index        uint    `json:"index"`
+	IsSeed       bool    `json:"is_seed"`
+	Name         string  `json:"name"`
+	PieceRange   []uint  `json:"piece_range"`
+	Priority     int     `json:"priority"`
+	Progress     float64 `json:"progress"`
+	Size         uint    `json:"size"`
+	Availability float64 `json:"availability"`
+}
+
 type Preferences struct {
 	Locale                             string                 `json:"locale"`
 	CreateSubfolderEnabled             bool                   `json:"create_subfolder_enabled"`

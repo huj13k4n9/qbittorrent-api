@@ -137,3 +137,115 @@ func (client *Client) TorrentTrackers(hash string) ([]Tracker, error) {
 
 	return data, nil
 }
+
+// TorrentWebSeeds method is used to get web seeds of specified torrent.
+// Pass hash of torrent as parameter so that server can identify the torrent.
+// Return URLs of web seeds as string.
+func (client *Client) TorrentWebSeeds(hash string) ([]string, error) {
+	resp, err := client.RequestAndHandleError(
+		"GET", consts.GetTorrentWebSeedsEndpoint, map[string]string{"hash": hash}, nil,
+		map[string]string{"404": "hash is invalid", "!200": "get torrent web seeds failed"})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var data []struct {
+		URL string `json:"url"`
+	}
+	err = json.NewDecoder(resp.Body).Decode(&data)
+	if err != nil {
+		return nil, err
+	}
+
+	var ret []string
+	for _, item := range data {
+		ret = append(ret, item.URL)
+	}
+
+	return ret, nil
+}
+
+// TorrentContents method is used to get web seeds of specified torrent.
+//
+// Pass hash of torrent as parameter so that server can identify the torrent.
+// `indexes` is optional, which represents what indexes do you want to obtain
+// file information with.
+//
+// Return a list of TorrentFileProperties, where each element contains info
+// about one file.
+func (client *Client) TorrentContents(hash string, indexes []uint) ([]TorrentFileProperties, error) {
+	params := make(map[string]string)
+	params["hash"] = hash
+	if indexes != nil && len(indexes) != 0 {
+		params["indexes"] = func(array []uint) string {
+			var temp []string
+			for _, item := range array {
+				temp = append(temp, strconv.Itoa(int(item)))
+			}
+			return strings.Join(temp, "|")
+		}(indexes)
+	}
+
+	resp, err := client.RequestAndHandleError(
+		"GET", consts.GetTorrentContentsEndpoint, params, nil,
+		map[string]string{"404": "hash is invalid", "!200": "get torrent contents failed"})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var data []TorrentFileProperties
+	err = json.NewDecoder(resp.Body).Decode(&data)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+// TorrentPieceStates method is used to get pieces' states of specified torrent.
+//
+// Pass hash of torrent as parameter so that server can identify the torrent.
+//
+// Return an array of states (integers) of all pieces (in order) of a specific torrent
+func (client *Client) TorrentPieceStates(hash string) ([]uint, error) {
+	resp, err := client.RequestAndHandleError(
+		"GET", consts.GetTorrentPieceStatesEndpoint, map[string]string{"hash": hash}, nil,
+		map[string]string{"404": "hash is invalid", "!200": "get torrent pieces' states failed"})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var data []uint
+	err = json.NewDecoder(resp.Body).Decode(&data)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+// TorrentPieceHashes method is used to get pieces' hashes of specified torrent.
+//
+// Pass hash of torrent as parameter so that server can identify the torrent.
+//
+// Return an array of hashes (strings) of all pieces (in order) of a specific torrent
+func (client *Client) TorrentPieceHashes(hash string) ([]string, error) {
+	resp, err := client.RequestAndHandleError(
+		"GET", consts.GetTorrentPieceHashesEndpoint, map[string]string{"hash": hash}, nil,
+		map[string]string{"404": "hash is invalid", "!200": "get torrent pieces' hashes failed"})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var data []string
+	err = json.NewDecoder(resp.Body).Decode(&data)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
