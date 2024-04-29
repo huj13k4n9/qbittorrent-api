@@ -16,6 +16,17 @@ type Peer struct {
 	Port uint
 }
 
+type Tracker struct {
+	URL           string `json:"url"`
+	Status        int    `json:"status"`
+	Tier          int    `json:"tier"`
+	NumPeers      uint   `json:"num_peers"`
+	NumSeeds      uint   `json:"num_seeds"`
+	NumLeeches    uint   `json:"num_leeches"`
+	NumDownloaded uint   `json:"num_downloaded"`
+	Message       string `json:"msg"`
+}
+
 type BuildInfo struct {
 	QTVersion         string `json:"qt"`
 	LibTorrentVersion string `json:"libtorrent"`
@@ -82,6 +93,115 @@ type SearchPluginResult struct {
 	} `json:"supportedCategories"`
 	Url     string `json:"url"`
 	Version string `json:"version"`
+}
+
+type TorrentListRequest struct {
+	Filter          string
+	WithoutCategory bool
+	Category        string
+	WithoutTag      bool
+	Tag             string
+	Sort            string
+	Reverse         bool
+	Limit           int
+	Offset          int
+	Hashes          []string
+}
+
+type TorrentInfo struct {
+	AddedOn                  Time     `json:"added_on"`
+	AmountLeft               uint     `json:"amount_left"`
+	AutoTMM                  bool     `json:"auto_tmm"`
+	Availability             float32  `json:"availability"`
+	Category                 string   `json:"category"`
+	Completed                uint     `json:"completed"`
+	CompletionOn             Time     `json:"completion_on"`
+	ContentPath              string   `json:"content_path"`
+	DownloadLimit            int      `json:"dl_limit"`
+	DownloadSpeed            uint     `json:"dlspeed"`
+	DownloadPath             string   `json:"download_path"`
+	Downloaded               uint     `json:"downloaded"`
+	DownloadedSession        uint     `json:"downloaded_session"`
+	ETA                      uint     `json:"eta"`
+	FirstLastPiecePriority   bool     `json:"f_l_piece_prio"`
+	ForceStart               bool     `json:"force_start"`
+	Hash                     string   `json:"hash"`
+	InactiveSeedingTimeLimit int      `json:"inactive_seeding_time_limit"`
+	InfoHashV1               string   `json:"infohash_v1"`
+	InfoHashV2               string   `json:"infohash_v2"`
+	LastActivity             Time     `json:"last_activity"`
+	MagnetURI                string   `json:"magnet_uri"`
+	MaxRatio                 float64  `json:"max_ratio"`
+	MaxInactiveSeedingTime   int      `json:"max_inactive_seeding_time"`
+	MaxSeedingTime           int      `json:"max_seeding_time"`
+	Name                     string   `json:"name"`
+	NumComplete              uint     `json:"num_complete"`
+	NumIncomplete            uint     `json:"num_incomplete"`
+	NumLeechers              uint     `json:"num_leechs"`
+	NumSeeds                 int      `json:"num_seeds"`
+	Priority                 int      `json:"priority"`
+	Progress                 float64  `json:"progress"`
+	Ratio                    float64  `json:"ratio"`
+	RatioLimit               float32  `json:"ratio_limit"`
+	SavePath                 string   `json:"save_path"`
+	SeedingTime              int      `json:"seeding_time"`
+	SeedingTimeLimit         int      `json:"seeding_time_limit"`
+	SeenComplete             Time     `json:"seen_complete"`
+	SequentialDownload       bool     `json:"seq_dl"`
+	Size                     uint     `json:"size"`
+	State                    string   `json:"state"`
+	SuperSeeding             bool     `json:"super_seeding"`
+	Tags                     []string `json:"tags"`
+	TimeActive               uint     `json:"time_active"`
+	TotalSize                uint     `json:"total_size"`
+	Tracker                  string   `json:"tracker"`
+	TrackersCount            int      `json:"trackers_count"`
+	UploadLimit              int      `json:"up_limit"`
+	Uploaded                 uint     `json:"uploaded"`
+	UploadedSession          uint     `json:"uploaded_session"`
+	UploadSpeed              int      `json:"upspeed"`
+}
+
+type TorrentProperties struct {
+	AdditionDate           Time    `json:"addition_date"`
+	Comment                string  `json:"comment"`
+	CompletionDate         Time    `json:"completion_date"`
+	CreatedBy              string  `json:"created_by"`
+	CreationDate           Time    `json:"creation_date"`
+	DownloadLimit          int     `json:"dl_limit"`
+	DownloadSpeed          int     `json:"dl_speed"`
+	DownloadSpeedAvg       int     `json:"dl_speed_avg"`
+	DownloadPath           string  `json:"download_path"`
+	ETA                    int     `json:"eta"`
+	Hash                   string  `json:"hash"`
+	InfoHashV1             string  `json:"infohash_v1"`
+	InfoHashV2             string  `json:"infohash_v2"`
+	IsPrivate              bool    `json:"is_private"`
+	LastSeen               Time    `json:"last_seen"`
+	Name                   string  `json:"name"`
+	NumConnections         int     `json:"nb_connections"`
+	NumConnectionsLimit    int     `json:"nb_connections_limit"`
+	Peers                  int     `json:"peers"`
+	PeersTotal             int     `json:"peers_total"`
+	PieceSize              int     `json:"piece_size"`
+	PiecesHave             int     `json:"pieces_have"`
+	PiecesNum              int     `json:"pieces_num"`
+	Reannounce             int     `json:"reannounce"`
+	SavePath               string  `json:"save_path"`
+	SeedingTime            int     `json:"seeding_time"`
+	Seeds                  int     `json:"seeds"`
+	SeedsTotal             int     `json:"seeds_total"`
+	ShareRatio             float64 `json:"share_ratio"`
+	TimeElapsed            uint    `json:"time_elapsed"`
+	TotalDownloaded        uint    `json:"total_downloaded"`
+	TotalDownloadedSession uint    `json:"total_downloaded_session"`
+	TotalSize              uint    `json:"total_size"`
+	TotalUploaded          uint    `json:"total_uploaded"`
+	TotalUploadedSession   uint    `json:"total_uploaded_session"`
+	TotalWasted            uint    `json:"total_wasted"`
+	UploadLimit            int     `json:"up_limit"`
+	UploadSpeed            int     `json:"up_speed"`
+	UploadSpeedAvg         int     `json:"up_speed_avg"`
 }
 
 type Preferences struct {
