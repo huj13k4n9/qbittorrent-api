@@ -8,7 +8,7 @@ const (
 	LogCritical
 )
 
-// Constants of connection status of qBitTorrent
+// Constants of connection status of qBittorrent
 const (
 	ConnectionStatusConnected    = "connected"
 	ConnectionStatusDisconnected = "disconnected"

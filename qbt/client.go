@@ -45,7 +45,7 @@ func (client *Client) Get(endpoint string, opts map[string]string) (*http.Respon
 	}
 
 	// add user-agent header to allow qbittorrent to identify us
-	req.Header.Set("User-Agent", "qBitTorrent-API "+Version)
+	req.Header.Set("User-Agent", "qBittorrent-API "+Version)
 
 	// add optional parameters that the user wants
 	if opts != nil {
@@ -110,7 +110,7 @@ func (client *Client) Post(endpoint string, opts map[string]string, headers map[
 	// add the content-type so qbittorrent knows what to expect
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	// add user-agent header to allow qbittorrent to identify us
-	req.Header.Set("User-Agent", "qBitTorrent-API "+Version)
+	req.Header.Set("User-Agent", "qBittorrent-API "+Version)
 
 	if headers != nil {
 		for k, v := range headers {

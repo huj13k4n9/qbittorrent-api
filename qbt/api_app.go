@@ -6,7 +6,7 @@ import (
 	wrapper "github.com/pkg/errors"
 )
 
-// Version get qBitTorrent application version
+// Version get qBittorrent application version
 //
 // Example: v4.6.4
 func (client *Client) Version() (string, error) {
@@ -22,7 +22,7 @@ func (client *Client) Version() (string, error) {
 	return string(resp), nil
 }
 
-// APIVersion get qBitTorrent API version
+// APIVersion get qBittorrent API version
 //
 // Example: 2.9.3
 func (client *Client) APIVersion() (string, error) {
@@ -38,7 +38,7 @@ func (client *Client) APIVersion() (string, error) {
 	return string(resp), nil
 }
 
-// GetBuildInfo get qBitTorrent build info
+// GetBuildInfo get qBittorrent build info
 func (client *Client) GetBuildInfo() (BuildInfo, error) {
 	if !client.Authenticated {
 		return BuildInfo{}, ErrUnauthenticated
@@ -58,7 +58,7 @@ func (client *Client) GetBuildInfo() (BuildInfo, error) {
 	return data, nil
 }
 
-// Shutdown turn qBitTorrent off
+// Shutdown turn qBittorrent off
 func (client *Client) Shutdown() error {
 	if !client.Authenticated {
 		return ErrUnauthenticated
@@ -77,7 +77,7 @@ func (client *Client) Shutdown() error {
 	return nil
 }
 
-// GetPreferences get qBitTorrent preferences
+// GetPreferences get qBittorrent preferences
 func (client *Client) GetPreferences() (Preferences, error) {
 	if !client.Authenticated {
 		return Preferences{}, ErrUnauthenticated
@@ -97,7 +97,7 @@ func (client *Client) GetPreferences() (Preferences, error) {
 	return data, nil
 }
 
-// SetPreferences set qBitTorrent preferences
+// SetPreferences set qBittorrent preferences
 func (client *Client) SetPreferences(data Preferences) error {
 	if !client.Authenticated {
 		return ErrUnauthenticated
