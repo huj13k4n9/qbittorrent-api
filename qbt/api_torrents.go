@@ -3,8 +3,6 @@ package qbt
 import (
 	"encoding/json"
 	"github.com/huj13k4n9/qbittorrent-api/consts"
-	wrapper "github.com/pkg/errors"
-	"net/http"
 	"strconv"
 	"strings"
 )
@@ -63,10 +61,6 @@ func BuildTorrentListQuery(req *TorrentListRequest) map[string]string {
 // options with nil. Otherwise, construct your own TorrentListRequest
 // data is needed.
 func (client *Client) Torrents(options *TorrentListRequest) ([]TorrentInfo, error) {
-	if !client.Authenticated {
-		return nil, ErrUnauthenticated
-	}
-
 	var params map[string]string
 	if options == nil {
 		params = BuildTorrentListQuery(&TorrentListRequest{
@@ -85,13 +79,12 @@ func (client *Client) Torrents(options *TorrentListRequest) ([]TorrentInfo, erro
 		params = BuildTorrentListQuery(options)
 	}
 
-	resp, err := client.Get(consts.GetTorrentListEndpoint, params)
+	resp, err := client.RequestAndHandleError(
+		"GET", consts.GetTorrentListEndpoint, params, nil,
+		map[string]string{"!200": "get torrents list failed"})
+
 	if err != nil {
 		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, wrapper.Wrap(ErrBadResponse, "get torrents list failed")
 	}
 
 	var data []TorrentInfo
@@ -108,22 +101,12 @@ func (client *Client) Torrents(options *TorrentListRequest) ([]TorrentInfo, erro
 //
 // Note: -1 is returned if the type of the property is integer but its value is not known.
 func (client *Client) TorrentProperties(hash string) (TorrentProperties, error) {
-	if !client.Authenticated {
-		return TorrentProperties{}, ErrUnauthenticated
-	}
+	resp, err := client.RequestAndHandleError(
+		"GET", consts.GetTorrentPropertiesEndpoint, map[string]string{"hash": hash}, nil,
+		map[string]string{"404": "hash is invalid", "!200": "get torrents properties failed"})
 
-	resp, err := client.Get(consts.GetTorrentPropertiesEndpoint, map[string]string{"hash": hash})
 	if err != nil {
 		return TorrentProperties{}, err
-	}
-
-	switch resp.StatusCode {
-	case http.StatusOK:
-		break
-	case http.StatusNotFound:
-		return TorrentProperties{}, wrapper.Wrap(ErrBadResponse, "hash is invalid")
-	default:
-		return TorrentProperties{}, wrapper.Wrap(ErrBadResponse, "get torrent properties failed")
 	}
 
 	var data TorrentProperties
@@ -138,22 +121,12 @@ func (client *Client) TorrentProperties(hash string) (TorrentProperties, error) 
 // TorrentTrackers method is used to get trackers of specified torrent.
 // Pass hash of torrent as parameter so that server can identify the torrent.
 func (client *Client) TorrentTrackers(hash string) ([]Tracker, error) {
-	if !client.Authenticated {
-		return nil, ErrUnauthenticated
-	}
+	resp, err := client.RequestAndHandleError(
+		"GET", consts.GetTorrentTrackersEndpoint, map[string]string{"hash": hash}, nil,
+		map[string]string{"404": "hash is invalid", "!200": "get torrent trackers failed"})
 
-	resp, err := client.Get(consts.GetTorrentTrackersEndpoint, map[string]string{"hash": hash})
 	if err != nil {
 		return nil, err
-	}
-
-	switch resp.StatusCode {
-	case http.StatusOK:
-		break
-	case http.StatusNotFound:
-		return nil, wrapper.Wrap(ErrBadResponse, "hash is invalid")
-	default:
-		return nil, wrapper.Wrap(ErrBadResponse, "get torrent trackers failed")
 	}
 
 	var data []Tracker

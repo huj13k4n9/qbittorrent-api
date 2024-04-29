@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/huj13k4n9/qbittorrent-api/consts"
 	wrapper "github.com/pkg/errors"
-	"net/http"
 	"strconv"
 	"strings"
 )
@@ -17,29 +16,21 @@ import (
 // search result, and use StopSearch to stop a search
 // task.
 func (client *Client) StartSearch(pattern string, plugins []string, category string) (uint, error) {
-	if !client.Authenticated {
-		return 0, ErrUnauthenticated
-	}
-
 	pluginString := strings.Join(plugins, "|")
 
-	resp, err := client.Post(consts.StartSearchEndpoint, map[string]string{
-		"pattern":  pattern,
-		"plugins":  pluginString,
-		"category": category,
-	}, nil)
+	resp, err := client.RequestAndHandleError(
+		"POST", consts.StartSearchEndpoint, map[string]string{
+			"pattern":  pattern,
+			"plugins":  pluginString,
+			"category": category,
+		}, nil,
+		map[string]string{
+			"409":  "user has reached the limit of max running searches",
+			"!200": "start search failed",
+		})
 
 	if err != nil {
 		return 0, err
-	}
-
-	switch resp.StatusCode {
-	case http.StatusOK:
-		break
-	case http.StatusConflict:
-		return 0, wrapper.Wrap(ErrBadResponse, "user has reached the limit of max running searches")
-	default:
-		return 0, wrapper.Wrap(ErrBadResponse, "start search failed")
 	}
 
 	var result struct {
@@ -61,26 +52,20 @@ func (client *Client) StartSearch(pattern string, plugins []string, category str
 // Use GetSearchResults with result ID to get search
 // result.
 func (client *Client) StopSearch(id uint) error {
-	if !client.Authenticated {
-		return ErrUnauthenticated
-	}
-
-	resp, err := client.Post(consts.StopSearchEndpoint, map[string]string{
-		"id": strconv.FormatUint(uint64(id), 10),
-	}, nil)
+	_, err := client.RequestAndHandleError(
+		"POST", consts.StopSearchEndpoint, map[string]string{
+			"id": strconv.FormatUint(uint64(id), 10),
+		}, nil,
+		map[string]string{
+			"404":  "search job was not found",
+			"!200": "stop search failed",
+		})
 
 	if err != nil {
 		return err
 	}
 
-	switch resp.StatusCode {
-	case http.StatusOK:
-		return nil
-	case http.StatusNotFound:
-		return wrapper.Wrap(ErrBadResponse, "search job was not found")
-	default:
-		return wrapper.Wrap(ErrBadResponse, "stop search failed")
-	}
+	return nil
 }
 
 // GetSearchStatus is used to obtain the status of search
@@ -90,27 +75,20 @@ func (client *Client) StopSearch(id uint) error {
 // request when it's set to 0, and the server should return
 // status of all search tasks.
 func (client *Client) GetSearchStatus(id uint) ([]SearchStatus, error) {
-	if !client.Authenticated {
-		return nil, ErrUnauthenticated
-	}
-
 	params := make(map[string]string)
 	if id != 0 {
 		params["id"] = strconv.FormatUint(uint64(id), 10)
 	}
 
-	resp, err := client.Post(consts.SearchStatusEndpoint, params, nil)
+	resp, err := client.RequestAndHandleError(
+		"POST", consts.SearchStatusEndpoint, params, nil,
+		map[string]string{
+			"404":  "search job was not found",
+			"!200": "get search status failed",
+		})
+
 	if err != nil {
 		return nil, err
-	}
-
-	switch resp.StatusCode {
-	case http.StatusOK:
-		break
-	case http.StatusNotFound:
-		return nil, wrapper.Wrap(ErrBadResponse, "search job was not found")
-	default:
-		return nil, wrapper.Wrap(ErrBadResponse, "get search status failed")
 	}
 
 	var result []SearchStatus
@@ -130,10 +108,6 @@ func (client *Client) GetSearchStatus(id uint) ([]SearchStatus, error) {
 // no limits on results). `offset` will be ignored in request
 // when it's set to 0 (means no offset in results).
 func (client *Client) GetSearchResults(id uint, limit int, offset int) (SearchResponse, error) {
-	if !client.Authenticated {
-		return SearchResponse{}, ErrUnauthenticated
-	}
-
 	params := make(map[string]string)
 	params["id"] = strconv.FormatUint(uint64(id), 10)
 	if limit > 0 {
@@ -144,20 +118,16 @@ func (client *Client) GetSearchResults(id uint, limit int, offset int) (SearchRe
 		params["offset"] = strconv.Itoa(offset)
 	}
 
-	resp, err := client.Post(consts.SearchResultsEndpoint, params, nil)
+	resp, err := client.RequestAndHandleError(
+		"POST", consts.SearchResultsEndpoint, params, nil,
+		map[string]string{
+			"404":  "search job was not found",
+			"409":  "offset is too large, or too small",
+			"!200": "get search results failed",
+		})
+
 	if err != nil {
 		return SearchResponse{}, err
-	}
-
-	switch resp.StatusCode {
-	case http.StatusOK:
-		break
-	case http.StatusNotFound:
-		return SearchResponse{}, wrapper.Wrap(ErrBadResponse, "search job was not found")
-	case http.StatusConflict:
-		return SearchResponse{}, wrapper.Wrap(ErrBadResponse, "offset is too large, or too small")
-	default:
-		return SearchResponse{}, wrapper.Wrap(ErrBadResponse, "get search results failed")
 	}
 
 	var result SearchResponse
@@ -172,26 +142,20 @@ func (client *Client) GetSearchResults(id uint, limit int, offset int) (SearchRe
 // DeleteSearch is used to delete a search task created
 // by StartSearch in qBittorrent search engine.
 func (client *Client) DeleteSearch(id uint) error {
-	if !client.Authenticated {
-		return ErrUnauthenticated
-	}
-
-	resp, err := client.Post(consts.DeleteSearchEndpoint, map[string]string{
-		"id": strconv.FormatUint(uint64(id), 10),
-	}, nil)
+	_, err := client.RequestAndHandleError(
+		"POST", consts.DeleteSearchEndpoint, map[string]string{
+			"id": strconv.FormatUint(uint64(id), 10),
+		}, nil,
+		map[string]string{
+			"404":  "search job was not found",
+			"!200": "delete search failed",
+		})
 
 	if err != nil {
 		return err
 	}
 
-	switch resp.StatusCode {
-	case http.StatusOK:
-		return nil
-	case http.StatusNotFound:
-		return wrapper.Wrap(ErrBadResponse, "search job was not found")
-	default:
-		return wrapper.Wrap(ErrBadResponse, "delete search failed")
-	}
+	return nil
 }
 
 // GetSearchPlugins retrieves a list of available search
@@ -222,84 +186,68 @@ func (client *Client) GetSearchPlugins() ([]SearchPluginResult, error) {
 // InstallPlugins takes a slice of plugin source URLs and installs
 // them to qBittorrent search engine. `sources` can be URL or file path.
 func (client *Client) InstallPlugins(sources []string) error {
-	if !client.Authenticated {
-		return ErrUnauthenticated
-	}
-
 	sourceString := strings.Join(sources, "|")
-	resp, err := client.Post(consts.InstallSearchPluginEndpoint, map[string]string{
-		"sources": sourceString,
-	}, nil)
+
+	_, err := client.RequestAndHandleError(
+		"POST", consts.InstallSearchPluginEndpoint, map[string]string{
+			"sources": sourceString,
+		}, nil,
+		map[string]string{"!200": "install search plugins failed"})
 
 	if err != nil {
 		return err
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return wrapper.Wrap(ErrBadResponse, "install search plugins failed")
-	}
 	return nil
 }
 
 // UninstallPlugins takes a slice of plugin names and uninstalls
 // them from qBittorrent search engine.
 func (client *Client) UninstallPlugins(names []string) error {
-	if !client.Authenticated {
-		return ErrUnauthenticated
-	}
-
 	namesString := strings.Join(names, "|")
-	resp, err := client.Post(consts.UninstallSearchPluginEndpoint, map[string]string{
-		"names": namesString,
-	}, nil)
+
+	_, err := client.RequestAndHandleError(
+		"POST", consts.UninstallSearchPluginEndpoint, map[string]string{
+			"names": namesString,
+		}, nil,
+		map[string]string{"!200": "uninstall search plugins failed"})
 
 	if err != nil {
 		return err
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return wrapper.Wrap(ErrBadResponse, "uninstall search plugins failed")
-	}
 	return nil
 }
 
 // EnablePlugins takes a slice of plugin names and enable/disable
 // them in qBittorrent search engine.
 func (client *Client) EnablePlugins(names []string, enable bool) error {
-	if !client.Authenticated {
-		return ErrUnauthenticated
-	}
-
 	namesString := strings.Join(names, "|")
-	resp, err := client.Post(consts.EnableSearchPluginEndpoint, map[string]string{
-		"names":  namesString,
-		"enable": strconv.FormatBool(enable),
-	}, nil)
+
+	_, err := client.RequestAndHandleError(
+		"POST", consts.EnableSearchPluginEndpoint, map[string]string{
+			"names":  namesString,
+			"enable": strconv.FormatBool(enable),
+		}, nil,
+		map[string]string{"!200": "enable search plugins failed"})
 
 	if err != nil {
 		return err
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return wrapper.Wrap(ErrBadResponse, "enable search plugins failed")
-	}
 	return nil
 }
 
 // UpdatePlugins takes a slice of plugin names and update
 // them if new version is available in qBittorrent search engine.
 func (client *Client) UpdatePlugins() error {
-	if !client.Authenticated {
-		return ErrUnauthenticated
-	}
+	_, err := client.RequestAndHandleError(
+		"POST", consts.UpdateSearchPluginEndpoint, nil, nil,
+		map[string]string{"!200": "update search plugins failed"})
 
-	resp, err := client.Post(consts.UpdateSearchPluginEndpoint, nil, nil)
 	if err != nil {
 		return wrapper.Wrap(err, "update search plugins failed")
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return wrapper.Wrap(ErrBadResponse, "update search plugins failed")
-	}
 	return nil
 }

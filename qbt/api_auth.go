@@ -40,17 +40,12 @@ func (client *Client) Login(username, password string) (success bool, err error)
 
 // Logout perform logout request to server
 func (client *Client) Logout() error {
-	if !client.Authenticated {
-		return ErrUnauthenticated
-	}
+	_, err := client.RequestAndHandleError(
+		"POST", consts.LogoutEndpoint, nil, nil,
+		map[string]string{"!200": "logout failed"})
 
-	resp, err := client.Post(consts.LogoutEndpoint, nil, nil)
 	if err != nil {
 		return err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return wrapper.Wrap(ErrBadResponse, "logout failed")
 	}
 
 	client.Authenticated = false

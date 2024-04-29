@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/huj13k4n9/qbittorrent-api/consts"
 	wrapper "github.com/pkg/errors"
-	"net/http"
 )
 
 // Version get qBittorrent application version
@@ -61,17 +60,12 @@ func (client *Client) GetBuildInfo() (BuildInfo, error) {
 
 // Shutdown turn qBittorrent off
 func (client *Client) Shutdown() error {
-	if !client.Authenticated {
-		return ErrUnauthenticated
-	}
+	_, err := client.RequestAndHandleError(
+		"POST", consts.ShutdownEndpoint, nil, nil,
+		map[string]string{"!200": "shutdown failed"})
 
-	resp, err := client.Post(consts.ShutdownEndpoint, nil, nil)
 	if err != nil {
 		return err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return wrapper.Wrap(ErrBadResponse, "shutdown failed")
 	}
 
 	client.Authenticated = false
@@ -100,26 +94,18 @@ func (client *Client) GetPreferences() (Preferences, error) {
 
 // SetPreferences set qBittorrent preferences
 func (client *Client) SetPreferences(data Preferences) error {
-	if !client.Authenticated {
-		return ErrUnauthenticated
-	}
-
 	bytes, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
 
-	resp, err := client.Post(
-		consts.SetPreferencesEndpoint,
-		map[string]string{"json": string(bytes)},
-		nil,
-	)
+	_, err = client.RequestAndHandleError(
+		"POST", consts.SetPreferencesEndpoint,
+		map[string]string{"json": string(bytes)}, nil,
+		map[string]string{"!200": "set preferences failed"})
+
 	if err != nil {
 		return err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return wrapper.Wrap(ErrBadResponse, "set preferences failed")
 	}
 
 	return nil

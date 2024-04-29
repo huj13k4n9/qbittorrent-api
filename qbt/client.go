@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -123,5 +124,51 @@ func (client *Client) Post(endpoint string, opts map[string]string, headers map[
 		return nil, wrapper.Wrap(err, "failed to perform request")
 	}
 
+	return resp, nil
+}
+
+func (client *Client) RequestAndHandleError(
+	method string,
+	endpoint string,
+	opts map[string]string,
+	headers map[string]string,
+	errorMsgs map[string]string,
+) (*http.Response, error) {
+	if !client.Authenticated {
+		return nil, ErrUnauthenticated
+	}
+
+	var resp *http.Response
+	var err error
+
+	switch method {
+	case "GET":
+		resp, err = client.Get(endpoint, opts)
+		break
+	case "POST":
+		resp, err = client.Post(endpoint, opts, headers)
+		break
+	default:
+		return nil, wrapper.Wrap(ErrBadResponse, "Unknown method "+method)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	for k, v := range errorMsgs {
+		var code int
+		if strings.HasPrefix(k, "!") {
+			code, _ = strconv.Atoi(k[1:])
+			if resp.StatusCode != code {
+				return nil, wrapper.Wrap(ErrBadResponse, v)
+			}
+		} else {
+			code, _ = strconv.Atoi(k)
+			if resp.StatusCode == code {
+				return nil, wrapper.Wrap(ErrBadResponse, v)
+			}
+		}
+	}
 	return resp, nil
 }

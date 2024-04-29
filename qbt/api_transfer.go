@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/huj13k4n9/qbittorrent-api/consts"
 	wrapper "github.com/pkg/errors"
-	"net/http"
 	"strconv"
 	"strings"
 )
@@ -58,17 +57,12 @@ func (client *Client) SpeedLimitsMode() (uint, error) {
 // When alternative speed limits is off, the values of Preferences.AltDownloadLimit and
 // Preferences.AltUploadLimit should be ignored.
 func (client *Client) ToggleSpeedLimitsMode() error {
-	if !client.Authenticated {
-		return ErrUnauthenticated
-	}
+	_, err := client.RequestAndHandleError(
+		"POST", consts.ToggleSpeedLimitsModeEndpoint, nil, nil,
+		map[string]string{"!200": "toggle speed limits mode failed"})
 
-	resp, err := client.Post(consts.ToggleSpeedLimitsModeEndpoint, nil, nil)
 	if err != nil {
 		return wrapper.Wrap(err, "toggle speed limits mode failed")
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return wrapper.Wrap(ErrBadResponse, "toggle speed limits mode failed")
 	}
 
 	return nil
@@ -140,20 +134,14 @@ func (client *Client) GetGlobalUploadLimit() (uint, error) {
 // When alternative speed limits is off (SpeedLimitsMode returns 0), this
 // API sets the global download speed limit, the same as Preferences.DownloadLimit.
 func (client *Client) SetGlobalDownloadLimit(limit uint) error {
-	if !client.Authenticated {
-		return ErrUnauthenticated
-	}
-
-	resp, err := client.Post(consts.SetGlobalDownloadLimitEndpoint, map[string]string{
-		"limit": strconv.Itoa(int(limit)),
-	}, nil)
+	_, err := client.RequestAndHandleError(
+		"POST", consts.SetGlobalDownloadLimitEndpoint, map[string]string{
+			"limit": strconv.Itoa(int(limit)),
+		}, nil,
+		map[string]string{"!200": "set global download limit failed"})
 
 	if err != nil {
 		return wrapper.Wrap(err, "set global download limit failed")
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return wrapper.Wrap(ErrBadResponse, "set global download limit failed")
 	}
 
 	return nil
@@ -169,20 +157,14 @@ func (client *Client) SetGlobalDownloadLimit(limit uint) error {
 // When alternative speed limits is off (SpeedLimitsMode returns 0), this
 // API sets the global upload speed limit, the same as Preferences.UploadLimit.
 func (client *Client) SetGlobalUploadLimit(limit uint) error {
-	if !client.Authenticated {
-		return ErrUnauthenticated
-	}
-
-	resp, err := client.Post(consts.SetGlobalUploadLimitEndpoint, map[string]string{
-		"limit": strconv.Itoa(int(limit)),
-	}, nil)
+	_, err := client.RequestAndHandleError(
+		"POST", consts.SetGlobalUploadLimitEndpoint, map[string]string{
+			"limit": strconv.Itoa(int(limit)),
+		}, nil,
+		map[string]string{"!200": "set global upload limit failed"})
 
 	if err != nil {
 		return wrapper.Wrap(err, "set global upload limit failed")
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return wrapper.Wrap(ErrBadResponse, "set global upload limit failed")
 	}
 
 	return nil
@@ -193,10 +175,6 @@ func (client *Client) SetGlobalUploadLimit(limit uint) error {
 // Multiple peers are separated by a pipe `|`. Each peer is a
 // colon-separated `host:port`.
 func (client *Client) BanPeers(peers []Peer) error {
-	if !client.Authenticated {
-		return ErrUnauthenticated
-	}
-
 	var peerStrings []string
 
 	for _, peer := range peers {
@@ -204,16 +182,15 @@ func (client *Client) BanPeers(peers []Peer) error {
 	}
 
 	reqParam := strings.Join(peerStrings, "|")
-	resp, err := client.Post(consts.BanPeersEndpoint, map[string]string{
-		"peers": reqParam,
-	}, nil)
+
+	_, err := client.RequestAndHandleError(
+		"POST", consts.BanPeersEndpoint, map[string]string{
+			"peers": reqParam,
+		}, nil,
+		map[string]string{"!200": "ban peers failed"})
 
 	if err != nil {
 		return wrapper.Wrap(err, "ban peers failed")
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return wrapper.Wrap(ErrBadResponse, "ban peers failed")
 	}
 
 	return nil
