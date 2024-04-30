@@ -95,19 +95,34 @@ func (client *Client) GetResponseBody(endpoint string, opts map[string]string, h
 
 // Post will perform a POST request with application/x-www-form-urlencoded parameters
 // and custom HTTP headers.
-func (client *Client) Post(endpoint string, opts map[string]string, headers map[string]string) (*http.Response, error) {
-	// add optional parameters that the user wants
-	form := url.Values{}
+func (client *Client) Post(endpoint string, opts interface{}, headers map[string]string, contentType string) (*http.Response, error) {
+	var postData *bytes.Buffer
+	typeAsserted := false
 	if opts != nil {
-		for k, v := range opts {
-			form.Add(k, v)
+		if params, ok := opts.(map[string]string); ok {
+			form := url.Values{}
+			for k, v := range params {
+				form.Add(k, v)
+			}
+			postData = bytes.NewBufferString(form.Encode())
+			typeAsserted = true
 		}
+		if params, ok := opts.(*bytes.Buffer); ok {
+			postData = params
+			typeAsserted = true
+		}
+
+		if !typeAsserted {
+			return nil, wrapper.Wrap(ErrUnknownType, "post data type unknown")
+		}
+	} else {
+		postData = nil
 	}
 
 	req, err := http.NewRequest(
 		"POST",
 		fmt.Sprintf(URLPattern, client.URL, endpoint),
-		bytes.NewBuffer([]byte(form.Encode())),
+		postData,
 	)
 
 	if err != nil {
@@ -115,7 +130,7 @@ func (client *Client) Post(endpoint string, opts map[string]string, headers map[
 	}
 
 	// add the content-type so qbittorrent knows what to expect
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Content-Type", contentType)
 	// add user-agent header to allow qbittorrent to identify us
 	req.Header.Set("User-Agent", "qBittorrent-API "+Version)
 
@@ -131,6 +146,14 @@ func (client *Client) Post(endpoint string, opts map[string]string, headers map[
 	}
 
 	return resp, nil
+}
+
+func (client *Client) PostWithParams(endpoint string, opts map[string]string, headers map[string]string) (*http.Response, error) {
+	return client.Post(endpoint, opts, headers, "application/x-www-form-urlencoded")
+}
+
+func (client *Client) PostMultipart(endpoint string, data *bytes.Buffer, contentType string) (*http.Response, error) {
+	return client.Post(endpoint, data, nil, contentType)
 }
 
 func (client *Client) RequestAndHandleError(
@@ -149,10 +172,10 @@ func (client *Client) RequestAndHandleError(
 
 	switch method {
 	case "GET":
-		resp, err = client.Get(endpoint, opts)
+		resp, err = client.Get(endpoint, opts, headers)
 		break
 	case "POST":
-		resp, err = client.Post(endpoint, opts, headers)
+		resp, err = client.PostWithParams(endpoint, opts, headers)
 		break
 	default:
 		return nil, wrapper.Wrap(ErrBadResponse, "Unknown method "+method)

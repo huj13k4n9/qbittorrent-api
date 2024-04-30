@@ -9,7 +9,7 @@ import (
 
 // Login perform login request to server
 func (client *Client) Login(username, password string) (success bool, err error) {
-	resp, err := client.Post(
+	resp, err := client.PostWithParams(
 		consts.LoginEndpoint,
 		map[string]string{"username": username, "password": password},
 		map[string]string{
