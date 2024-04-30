@@ -97,7 +97,6 @@ func (client *Client) Torrents(options *TorrentListRequest) ([]TorrentInfo, erro
 }
 
 // TorrentProperties method is used to get generic properties of specified torrent.
-// Pass hash of torrents as parameter so that server can identify them.
 //
 // Note: -1 is returned if the type of the property is integer but its value is not known.
 func (client *Client) TorrentProperties(hash string) (TorrentProperties, error) {
@@ -119,7 +118,6 @@ func (client *Client) TorrentProperties(hash string) (TorrentProperties, error) 
 }
 
 // TorrentTrackers method is used to get trackers of specified torrent.
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) TorrentTrackers(hash string) ([]Tracker, error) {
 	resp, err := client.RequestAndHandleError(
 		"GET", consts.GetTorrentTrackersEndpoint, map[string]string{"hash": hash}, nil,
@@ -139,7 +137,6 @@ func (client *Client) TorrentTrackers(hash string) ([]Tracker, error) {
 }
 
 // TorrentWebSeeds method is used to get web seeds of specified torrent.
-// Pass hash of torrents as parameter so that server can identify them.
 // Return URLs of web seeds as string.
 func (client *Client) TorrentWebSeeds(hash string) ([]string, error) {
 	resp, err := client.RequestAndHandleError(
@@ -167,8 +164,6 @@ func (client *Client) TorrentWebSeeds(hash string) ([]string, error) {
 }
 
 // TorrentContents method is used to get web seeds of specified torrent.
-//
-// Pass hash of torrents as parameter so that server can identify them.
 // `indexes` is optional, which represents what indexes do you want to obtain
 // file information with.
 //
@@ -206,8 +201,6 @@ func (client *Client) TorrentContents(hash string, indexes []int) ([]TorrentFile
 
 // TorrentPieceStates method is used to get pieces' states of specified torrent.
 //
-// Pass hash of torrents as parameter so that server can identify them.
-//
 // Return an array of states (integers) of all pieces (in order) of a specific torrent
 func (client *Client) TorrentPieceStates(hash string) ([]int, error) {
 	resp, err := client.RequestAndHandleError(
@@ -229,8 +222,6 @@ func (client *Client) TorrentPieceStates(hash string) ([]int, error) {
 
 // TorrentPieceHashes method is used to get pieces' hashes of specified torrent.
 //
-// Pass hash of torrents as parameter so that server can identify them.
-//
 // Return an array of hashes (strings) of all pieces (in order) of a specific torrent
 func (client *Client) TorrentPieceHashes(hash string) ([]string, error) {
 	resp, err := client.RequestAndHandleError(
@@ -251,7 +242,6 @@ func (client *Client) TorrentPieceHashes(hash string) ([]string, error) {
 }
 
 // PauseTorrents method is used to pause specified torrent(s).
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) PauseTorrents(hashes []string) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.PauseTorrentsEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
@@ -265,7 +255,6 @@ func (client *Client) PauseTorrents(hashes []string) error {
 }
 
 // ResumeTorrents method is used to resume specified torrent(s).
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) ResumeTorrents(hashes []string) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.ResumeTorrentsEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
@@ -279,7 +268,6 @@ func (client *Client) ResumeTorrents(hashes []string) error {
 }
 
 // DeleteTorrents method is used to delete specified torrent(s).
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) DeleteTorrents(hashes []string, deleteFiles bool) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.DeleteTorrentsEndpoint,
@@ -294,7 +282,6 @@ func (client *Client) DeleteTorrents(hashes []string, deleteFiles bool) error {
 }
 
 // RecheckTorrents method is used to recheck specified torrent(s).
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) RecheckTorrents(hashes []string) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.RecheckTorrentsEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
@@ -308,7 +295,6 @@ func (client *Client) RecheckTorrents(hashes []string) error {
 }
 
 // ReannounceTorrents method is used to reannounce specified torrent(s).
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) ReannounceTorrents(hashes []string) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.ReannounceTorrentsEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
@@ -322,7 +308,6 @@ func (client *Client) ReannounceTorrents(hashes []string) error {
 }
 
 // AddTrackersToTorrent method is used to add trackers to specified torrent.
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) AddTrackersToTorrent(hash string, trackers []string) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.AddTrackersToTorrentEndpoint, map[string]string{"hash": hash, "trackers": strings.Join(trackers, "\n")},
@@ -336,7 +321,6 @@ func (client *Client) AddTrackersToTorrent(hash string, trackers []string) error
 }
 
 // RemoveTrackersToTorrent method is used to remove trackers to specified torrent.
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) RemoveTrackersToTorrent(hash string, trackers []string) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.RemoveTrackersEndpoint, map[string]string{"hash": hash, "trackers": strings.Join(trackers, "|")},
@@ -354,7 +338,6 @@ func (client *Client) RemoveTrackersToTorrent(hash string, trackers []string) er
 }
 
 // EditTrackersToTorrent method is used to edit trackers to specified torrent.
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) EditTrackersToTorrent(hash string, origUrl string, newUrl string) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.EditTrackersEndpoint, map[string]string{"hash": hash, "origUrl": origUrl, "newUrl": newUrl},
@@ -373,7 +356,6 @@ func (client *Client) EditTrackersToTorrent(hash string, origUrl string, newUrl 
 }
 
 // AddPeers method is used to add peers to specified torrent(s).
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) AddPeers(hashes []string, peers []Peer) error {
 	var peerString []string
 	for _, peer := range peers {
@@ -396,7 +378,6 @@ func (client *Client) AddPeers(hashes []string, peers []Peer) error {
 }
 
 // IncreaseTorrentPriority method is used to increase torrent priority.
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) IncreaseTorrentPriority(hashes []string) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.IncreaseTorrentPriorityEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
@@ -413,7 +394,6 @@ func (client *Client) IncreaseTorrentPriority(hashes []string) error {
 }
 
 // DecreaseTorrentPriority method is used to decrease torrent priority.
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) DecreaseTorrentPriority(hashes []string) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.DecreaseTorrentPriorityEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
@@ -430,7 +410,6 @@ func (client *Client) DecreaseTorrentPriority(hashes []string) error {
 }
 
 // MaximalTorrentPriority method is used to maximize torrent priority.
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) MaximalTorrentPriority(hashes []string) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.MaximalTorrentPriorityEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
@@ -447,7 +426,6 @@ func (client *Client) MaximalTorrentPriority(hashes []string) error {
 }
 
 // MinimalTorrentPriority method is used to minimize torrent priority.
-// Pass hash of torrents as parameter so that server can identify them.
 func (client *Client) MinimalTorrentPriority(hashes []string) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.MinimalTorrentPriorityEndpoint, map[string]string{"hashes": strings.Join(hashes, "|")},
