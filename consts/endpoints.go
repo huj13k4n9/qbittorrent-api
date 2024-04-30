@@ -25,7 +25,7 @@ const (
 
 // Sync endpoints
 const (
-	MainDataEndpoint         = "sync/main"
+	SyncMainDataEndpoint     = "sync/maindata"
 	TorrentPeersDataEndpoint = "sync/torrentPeers"
 )
 
