@@ -158,7 +158,7 @@ func (client *Client) RequestAndHandleError(
 
 	for k, v := range errorMsgs {
 		var code int
-		if strings.HasPrefix(k, "!") {
+		if k[0] == '!' {
 			code, _ = strconv.Atoi(k[1:])
 			if resp.StatusCode != code {
 				return nil, wrapper.Wrap(ErrBadResponse, v)
