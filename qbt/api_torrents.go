@@ -174,14 +174,14 @@ func (client *Client) TorrentWebSeeds(hash string) ([]string, error) {
 //
 // Return a list of TorrentFileProperties, where each element contains info
 // about one file.
-func (client *Client) TorrentContents(hash string, indexes []uint) ([]TorrentFileProperties, error) {
+func (client *Client) TorrentContents(hash string, indexes []int) ([]TorrentFileProperties, error) {
 	params := make(map[string]string)
 	params["hash"] = hash
 	if indexes != nil && len(indexes) != 0 {
-		params["indexes"] = func(array []uint) string {
+		params["indexes"] = func(array []int) string {
 			var temp []string
 			for _, item := range array {
-				temp = append(temp, strconv.Itoa(int(item)))
+				temp = append(temp, strconv.Itoa(item))
 			}
 			return strings.Join(temp, "|")
 		}(indexes)
@@ -209,7 +209,7 @@ func (client *Client) TorrentContents(hash string, indexes []uint) ([]TorrentFil
 // Pass hash of torrents as parameter so that server can identify them.
 //
 // Return an array of states (integers) of all pieces (in order) of a specific torrent
-func (client *Client) TorrentPieceStates(hash string) ([]uint, error) {
+func (client *Client) TorrentPieceStates(hash string) ([]int, error) {
 	resp, err := client.RequestAndHandleError(
 		"GET", consts.GetTorrentPieceStatesEndpoint, map[string]string{"hash": hash}, nil,
 		map[string]string{"404": "hash is invalid", "!200": "get torrent pieces' states failed"})
@@ -218,7 +218,7 @@ func (client *Client) TorrentPieceStates(hash string) ([]uint, error) {
 		return nil, err
 	}
 
-	var data []uint
+	var data []int
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		return nil, err

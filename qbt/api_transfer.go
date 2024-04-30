@@ -33,7 +33,7 @@ func (client *Client) GetTransferInfo() (TransferInfo, error) {
 //
 // When alternative speed limits is off, the values of Preferences.AltDownloadLimit and
 // Preferences.AltUploadLimit should be ignored.
-func (client *Client) SpeedLimitsMode() (uint, error) {
+func (client *Client) SpeedLimitsMode() (int, error) {
 	if !client.Authenticated {
 		return 0, ErrUnauthenticated
 	}
@@ -43,12 +43,12 @@ func (client *Client) SpeedLimitsMode() (uint, error) {
 		return 0, wrapper.Wrap(err, "get speed limits mode failed")
 	}
 
-	ret, err := strconv.ParseUint(string(resp), 10, 32)
+	ret, err := strconv.ParseInt(string(resp), 10, 64)
 	if err != nil {
 		return 0, err
 	}
 
-	return uint(ret), nil
+	return int(ret), nil
 }
 
 // ToggleSpeedLimitsMode will switch the status of alternative speed limits.
@@ -78,7 +78,7 @@ func (client *Client) ToggleSpeedLimitsMode() error {
 //
 // When alternative speed limits is off (SpeedLimitsMode returns 0), this
 // API returns the global download speed limit, the same as Preferences.DownloadLimit.
-func (client *Client) GetGlobalDownloadLimit() (uint, error) {
+func (client *Client) GetGlobalDownloadLimit() (int, error) {
 	if !client.Authenticated {
 		return 0, ErrUnauthenticated
 	}
@@ -88,12 +88,12 @@ func (client *Client) GetGlobalDownloadLimit() (uint, error) {
 		return 0, wrapper.Wrap(err, "get global download limit failed")
 	}
 
-	ret, err := strconv.ParseUint(string(resp), 10, 32)
+	ret, err := strconv.ParseInt(string(resp), 10, 64)
 	if err != nil {
 		return 0, err
 	}
 
-	return uint(ret), nil
+	return int(ret), nil
 }
 
 // GetGlobalUploadLimit The response is the value of current global
@@ -106,7 +106,7 @@ func (client *Client) GetGlobalDownloadLimit() (uint, error) {
 //
 // When alternative speed limits is off (SpeedLimitsMode returns 0), this
 // API returns the global upload speed limit, the same as Preferences.UploadLimit.
-func (client *Client) GetGlobalUploadLimit() (uint, error) {
+func (client *Client) GetGlobalUploadLimit() (int, error) {
 	if !client.Authenticated {
 		return 0, ErrUnauthenticated
 	}
@@ -116,12 +116,12 @@ func (client *Client) GetGlobalUploadLimit() (uint, error) {
 		return 0, wrapper.Wrap(err, "get global upload limit failed")
 	}
 
-	ret, err := strconv.ParseUint(string(resp), 10, 32)
+	ret, err := strconv.ParseInt(string(resp), 10, 64)
 	if err != nil {
 		return 0, err
 	}
 
-	return uint(ret), nil
+	return int(ret), nil
 }
 
 // SetGlobalDownloadLimit The parameter is the value of desired global
@@ -133,10 +133,10 @@ func (client *Client) GetGlobalUploadLimit() (uint, error) {
 //
 // When alternative speed limits is off (SpeedLimitsMode returns 0), this
 // API sets the global download speed limit, the same as Preferences.DownloadLimit.
-func (client *Client) SetGlobalDownloadLimit(limit uint) error {
+func (client *Client) SetGlobalDownloadLimit(limit int) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.SetGlobalDownloadLimitEndpoint, map[string]string{
-			"limit": strconv.Itoa(int(limit)),
+			"limit": strconv.Itoa(limit),
 		}, nil,
 		map[string]string{"!200": "set global download limit failed"})
 
@@ -156,10 +156,10 @@ func (client *Client) SetGlobalDownloadLimit(limit uint) error {
 //
 // When alternative speed limits is off (SpeedLimitsMode returns 0), this
 // API sets the global upload speed limit, the same as Preferences.UploadLimit.
-func (client *Client) SetGlobalUploadLimit(limit uint) error {
+func (client *Client) SetGlobalUploadLimit(limit int) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.SetGlobalUploadLimitEndpoint, map[string]string{
-			"limit": strconv.Itoa(int(limit)),
+			"limit": strconv.Itoa(limit),
 		}, nil,
 		map[string]string{"!200": "set global upload limit failed"})
 

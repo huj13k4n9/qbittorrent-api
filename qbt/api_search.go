@@ -15,7 +15,7 @@ import (
 // Use GetSearchResults with result ID to get
 // search result, and use StopSearch to stop a search
 // task.
-func (client *Client) StartSearch(pattern string, plugins []string, category string) (uint, error) {
+func (client *Client) StartSearch(pattern string, plugins []string, category string) (int, error) {
 	pluginString := strings.Join(plugins, "|")
 
 	resp, err := client.RequestAndHandleError(
@@ -42,7 +42,7 @@ func (client *Client) StartSearch(pattern string, plugins []string, category str
 		return 0, err
 	}
 
-	return uint(result.ID), nil
+	return result.ID, nil
 }
 
 // StopSearch is used to stop a search task that is
@@ -51,10 +51,10 @@ func (client *Client) StartSearch(pattern string, plugins []string, category str
 //
 // Use GetSearchResults with result ID to get search
 // result.
-func (client *Client) StopSearch(id uint) error {
+func (client *Client) StopSearch(id int) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.StopSearchEndpoint, map[string]string{
-			"id": strconv.FormatUint(uint64(id), 10),
+			"id": strconv.Itoa(id),
 		}, nil,
 		map[string]string{
 			"404":  "search job was not found",
@@ -74,10 +74,10 @@ func (client *Client) StopSearch(id uint) error {
 // Argument `id` is optional. `id` will be ignored in
 // request when it's set to 0, and the server should return
 // status of all search tasks.
-func (client *Client) GetSearchStatus(id uint) ([]SearchStatus, error) {
+func (client *Client) GetSearchStatus(id int) ([]SearchStatus, error) {
 	params := make(map[string]string)
 	if id != 0 {
-		params["id"] = strconv.FormatUint(uint64(id), 10)
+		params["id"] = strconv.Itoa(id)
 	}
 
 	resp, err := client.RequestAndHandleError(
@@ -107,9 +107,9 @@ func (client *Client) GetSearchStatus(id uint) ([]SearchStatus, error) {
 // be ignored in request when it's set to 0 or negative (means
 // no limits on results). `offset` will be ignored in request
 // when it's set to 0 (means no offset in results).
-func (client *Client) GetSearchResults(id uint, limit int, offset int) (SearchResponse, error) {
+func (client *Client) GetSearchResults(id int, limit int, offset int) (SearchResponse, error) {
 	params := make(map[string]string)
-	params["id"] = strconv.FormatUint(uint64(id), 10)
+	params["id"] = strconv.Itoa(id)
 	if limit > 0 {
 		params["limit"] = strconv.Itoa(limit)
 	}
@@ -141,10 +141,10 @@ func (client *Client) GetSearchResults(id uint, limit int, offset int) (SearchRe
 
 // DeleteSearch is used to delete a search task created
 // by StartSearch in qBittorrent search engine.
-func (client *Client) DeleteSearch(id uint) error {
+func (client *Client) DeleteSearch(id int) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.DeleteSearchEndpoint, map[string]string{
-			"id": strconv.FormatUint(uint64(id), 10),
+			"id": strconv.Itoa(id),
 		}, nil,
 		map[string]string{
 			"404":  "search job was not found",

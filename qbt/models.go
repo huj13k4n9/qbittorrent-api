@@ -13,17 +13,17 @@ type Client struct {
 
 type Peer struct {
 	IP   string
-	Port uint
+	Port int
 }
 
 type Tracker struct {
 	URL           string `json:"url"`
 	Status        int    `json:"status"`
 	Tier          int    `json:"tier"`
-	NumPeers      uint   `json:"num_peers"`
-	NumSeeds      uint   `json:"num_seeds"`
-	NumLeeches    uint   `json:"num_leeches"`
-	NumDownloaded uint   `json:"num_downloaded"`
+	NumPeers      int    `json:"num_peers"`
+	NumSeeds      int    `json:"num_seeds"`
+	NumLeeches    int    `json:"num_leeches"`
+	NumDownloaded int    `json:"num_downloaded"`
 	Message       string `json:"msg"`
 }
 
@@ -32,18 +32,18 @@ type BuildInfo struct {
 	LibTorrentVersion string `json:"libtorrent"`
 	BoostVersion      string `json:"boost"`
 	OpenSSLVersion    string `json:"openssl"`
-	Bitness           uint   `json:"bitness"`
+	Bitness           int    `json:"bitness"`
 }
 
 type MainLog struct {
-	ID        uint   `json:"id"`
+	ID        int    `json:"id"`
 	Message   string `json:"message"`
 	Timestamp Time   `json:"timestamp"`
-	Type      uint   `json:"type"`
+	Type      int    `json:"type"`
 }
 
 type PeerLog struct {
-	ID        uint   `json:"id"`
+	ID        int    `json:"id"`
 	IP        string `json:"ip"`
 	Timestamp Time   `json:"timestamp"`
 	Blocked   bool   `json:"blocked"`
@@ -52,25 +52,25 @@ type PeerLog struct {
 
 type TransferInfo struct {
 	ConnectionStatus  string `json:"connection_status"`
-	DHTNodes          uint   `json:"dht_nodes"`
-	DownloadInfoData  uint   `json:"dl_info_data"`
-	DownloadInfoSpeed uint   `json:"dl_info_speed"`
-	DownloadRateLimit uint   `json:"dl_rate_limit"`
-	UploadInfoData    uint   `json:"up_info_data"`
-	UploadInfoSpeed   uint   `json:"up_info_speed"`
-	UploadRateLimit   uint   `json:"up_rate_limit"`
+	DHTNodes          int    `json:"dht_nodes"`
+	DownloadInfoData  int    `json:"dl_info_data"`
+	DownloadInfoSpeed int    `json:"dl_info_speed"`
+	DownloadRateLimit int    `json:"dl_rate_limit"`
+	UploadInfoData    int    `json:"up_info_data"`
+	UploadInfoSpeed   int    `json:"up_info_speed"`
+	UploadRateLimit   int    `json:"up_rate_limit"`
 }
 
 type SearchStatus struct {
-	ID     uint   `json:"id"`
+	ID     int    `json:"id"`
 	Status string `json:"status"`
-	Total  uint   `json:"total"`
+	Total  int    `json:"total"`
 }
 
 type SearchResponse struct {
 	Results []SearchResult `json:"results"`
 	Status  string         `json:"status"`
-	Total   uint           `json:"total"`
+	Total   int            `json:"total"`
 }
 
 type SearchResult struct {
@@ -78,8 +78,8 @@ type SearchResult struct {
 	FileName         string `json:"fileName"`
 	FileSize         int    `json:"fileSize"`
 	FileURL          string `json:"fileUrl"`
-	NumberOfLeechers uint   `json:"nbLeechers"`
-	NumberOfSeeders  uint   `json:"nbSeeders"`
+	NumberOfLeechers int    `json:"nbLeechers"`
+	NumberOfSeeders  int    `json:"nbSeeders"`
 	SiteURL          string `json:"siteUrl"`
 }
 
@@ -110,19 +110,19 @@ type TorrentListRequest struct {
 
 type TorrentInfo struct {
 	AddedOn                  Time     `json:"added_on"`
-	AmountLeft               uint     `json:"amount_left"`
+	AmountLeft               int      `json:"amount_left"`
 	AutoTMM                  bool     `json:"auto_tmm"`
 	Availability             float32  `json:"availability"`
 	Category                 string   `json:"category"`
-	Completed                uint     `json:"completed"`
+	Completed                int      `json:"completed"`
 	CompletionOn             Time     `json:"completion_on"`
 	ContentPath              string   `json:"content_path"`
 	DownloadLimit            int      `json:"dl_limit"`
-	DownloadSpeed            uint     `json:"dlspeed"`
+	DownloadSpeed            int      `json:"dlspeed"`
 	DownloadPath             string   `json:"download_path"`
-	Downloaded               uint     `json:"downloaded"`
-	DownloadedSession        uint     `json:"downloaded_session"`
-	ETA                      uint     `json:"eta"`
+	Downloaded               int      `json:"downloaded"`
+	DownloadedSession        int      `json:"downloaded_session"`
+	ETA                      int      `json:"eta"`
 	FirstLastPiecePriority   bool     `json:"f_l_piece_prio"`
 	ForceStart               bool     `json:"force_start"`
 	Hash                     string   `json:"hash"`
@@ -135,9 +135,9 @@ type TorrentInfo struct {
 	MaxInactiveSeedingTime   int      `json:"max_inactive_seeding_time"`
 	MaxSeedingTime           int      `json:"max_seeding_time"`
 	Name                     string   `json:"name"`
-	NumComplete              uint     `json:"num_complete"`
-	NumIncomplete            uint     `json:"num_incomplete"`
-	NumLeechers              uint     `json:"num_leechs"`
+	NumComplete              int      `json:"num_complete"`
+	NumIncomplete            int      `json:"num_incomplete"`
+	NumLeechers              int      `json:"num_leechs"`
 	NumSeeds                 int      `json:"num_seeds"`
 	Priority                 int      `json:"priority"`
 	Progress                 float64  `json:"progress"`
@@ -148,17 +148,17 @@ type TorrentInfo struct {
 	SeedingTimeLimit         int      `json:"seeding_time_limit"`
 	SeenComplete             Time     `json:"seen_complete"`
 	SequentialDownload       bool     `json:"seq_dl"`
-	Size                     uint     `json:"size"`
+	Size                     int      `json:"size"`
 	State                    string   `json:"state"`
 	SuperSeeding             bool     `json:"super_seeding"`
 	Tags                     []string `json:"tags"`
-	TimeActive               uint     `json:"time_active"`
-	TotalSize                uint     `json:"total_size"`
+	TimeActive               int      `json:"time_active"`
+	TotalSize                int      `json:"total_size"`
 	Tracker                  string   `json:"tracker"`
 	TrackersCount            int      `json:"trackers_count"`
 	UploadLimit              int      `json:"up_limit"`
-	Uploaded                 uint     `json:"uploaded"`
-	UploadedSession          uint     `json:"uploaded_session"`
+	Uploaded                 int      `json:"uploaded"`
+	UploadedSession          int      `json:"uploaded_session"`
 	UploadSpeed              int      `json:"upspeed"`
 }
 
@@ -192,26 +192,26 @@ type TorrentProperties struct {
 	Seeds                  int     `json:"seeds"`
 	SeedsTotal             int     `json:"seeds_total"`
 	ShareRatio             float64 `json:"share_ratio"`
-	TimeElapsed            uint    `json:"time_elapsed"`
-	TotalDownloaded        uint    `json:"total_downloaded"`
-	TotalDownloadedSession uint    `json:"total_downloaded_session"`
-	TotalSize              uint    `json:"total_size"`
-	TotalUploaded          uint    `json:"total_uploaded"`
-	TotalUploadedSession   uint    `json:"total_uploaded_session"`
-	TotalWasted            uint    `json:"total_wasted"`
+	TimeElapsed            int     `json:"time_elapsed"`
+	TotalDownloaded        int     `json:"total_downloaded"`
+	TotalDownloadedSession int     `json:"total_downloaded_session"`
+	TotalSize              int     `json:"total_size"`
+	TotalUploaded          int     `json:"total_uploaded"`
+	TotalUploadedSession   int     `json:"total_uploaded_session"`
+	TotalWasted            int     `json:"total_wasted"`
 	UploadLimit            int     `json:"up_limit"`
 	UploadSpeed            int     `json:"up_speed"`
 	UploadSpeedAvg         int     `json:"up_speed_avg"`
 }
 
 type TorrentFileProperties struct {
-	Index        uint    `json:"index"`
+	Index        int     `json:"index"`
 	IsSeed       bool    `json:"is_seed"`
 	Name         string  `json:"name"`
-	PieceRange   []uint  `json:"piece_range"`
+	PieceRange   []int   `json:"piece_range"`
 	Priority     int     `json:"priority"`
 	Progress     float64 `json:"progress"`
-	Size         uint    `json:"size"`
+	Size         int     `json:"size"`
 	Availability float64 `json:"availability"`
 }
 
