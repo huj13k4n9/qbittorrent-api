@@ -55,6 +55,7 @@ const (
 	DeleteTorrentsEndpoint            = "torrents/delete"
 	RecheckTorrentsEndpoint           = "torrents/recheck"
 	ReannounceTorrentsEndpoint        = "torrents/reannounce"
+	ExportTorrentEndpoint             = "torrents/export"
 	AddNewTorrentEndpoint             = "torrents/add"
 	AddTrackersToTorrentEndpoint      = "torrents/addTrackers"
 	EditTrackersEndpoint              = "torrents/editTracker"

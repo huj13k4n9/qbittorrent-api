@@ -72,6 +72,20 @@ const (
 	FilePriorityMax          = 7
 )
 
+// Constants of torrent stop condition
+const (
+	StopConditionNone     = "None"
+	StopConditionMetadata = "MetadataReceived"
+	StopConditionFiles    = "FilesChecked"
+)
+
+// Constants of torrent content layout
+const (
+	ContentLayoutOriginal    = "Original"
+	ContentLayoutSubfolder   = "Subfolder"
+	ContentLayoutNoSubfolder = "NoSubfolder"
+)
+
 // Constants of connection status of qBittorrent
 const (
 	ConnectionStatusConnected    = "connected"

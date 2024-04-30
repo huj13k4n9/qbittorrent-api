@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -15,7 +16,28 @@ const URLPattern = "%s/api/v2/%s"
 const Version = "v0.1"
 
 var ErrBadResponse = errors.New("received bad response")
+var ErrUnknownType = errors.New("unknown type")
 var ErrUnauthenticated = errors.New("unauthenticated request")
+
+func WriteFile(path string, content []byte, overwrite bool) error {
+	flags := os.O_CREATE | os.O_WRONLY
+	if !overwrite {
+		flags |= os.O_EXCL
+	} else {
+		flags |= os.O_TRUNC
+	}
+
+	file, err := os.OpenFile(path, flags, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	_, err = file.Write(content)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 func (t *Time) UnmarshalJSON(bytes []byte) error {
 	timestamp, err := strconv.ParseInt(string(bytes), 10, 64)
