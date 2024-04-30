@@ -14,7 +14,7 @@ func (client *Client) Version() (string, error) {
 		return "", ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(consts.VersionEndpoint, nil)
+	resp, err := client.GetResponseBody(consts.VersionEndpoint, nil, nil)
 	if err != nil {
 		return "", wrapper.Wrap(err, "get qbittorrent version failed")
 	}
@@ -30,7 +30,7 @@ func (client *Client) APIVersion() (string, error) {
 		return "", ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(consts.WebAPIVersionEndpoint, nil)
+	resp, err := client.GetResponseBody(consts.WebAPIVersionEndpoint, nil, nil)
 	if err != nil {
 		return "", wrapper.Wrap(err, "get WebAPI version failed")
 	}
@@ -44,7 +44,7 @@ func (client *Client) GetBuildInfo() (BuildInfo, error) {
 		return BuildInfo{}, ErrUnauthenticated
 	}
 
-	resp, err := client.Get(consts.BuildInfoEndpoint, nil)
+	resp, err := client.Get(consts.BuildInfoEndpoint, nil, nil)
 	if err != nil {
 		return BuildInfo{}, wrapper.Wrap(err, "get build info failed")
 	}
@@ -78,7 +78,7 @@ func (client *Client) GetPreferences() (Preferences, error) {
 		return Preferences{}, ErrUnauthenticated
 	}
 
-	resp, err := client.Get(consts.GetPreferencesEndpoint, nil)
+	resp, err := client.Get(consts.GetPreferencesEndpoint, nil, nil)
 	if err != nil {
 		return Preferences{}, wrapper.Wrap(err, "get preferences failed")
 	}
@@ -117,7 +117,7 @@ func (client *Client) DefaultSavePath() (string, error) {
 		return "", ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(consts.DefaultSavePathEndpoint, nil)
+	resp, err := client.GetResponseBody(consts.DefaultSavePathEndpoint, nil, nil)
 	if err != nil {
 		return "", wrapper.Wrap(err, "get default save path failed")
 	}

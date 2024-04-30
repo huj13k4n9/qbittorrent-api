@@ -14,7 +14,7 @@ func (client *Client) GetTransferInfo() (TransferInfo, error) {
 		return TransferInfo{}, ErrUnauthenticated
 	}
 
-	resp, err := client.Get(consts.GetGlobalTransferInfoEndpoint, nil)
+	resp, err := client.Get(consts.GetGlobalTransferInfoEndpoint, nil, nil)
 	if err != nil {
 		return TransferInfo{}, wrapper.Wrap(err, "get transfer info failed")
 	}
@@ -38,7 +38,7 @@ func (client *Client) SpeedLimitsMode() (int, error) {
 		return 0, ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(consts.GetSpeedLimitsModeEndpoint, nil)
+	resp, err := client.GetResponseBody(consts.GetSpeedLimitsModeEndpoint, nil, nil)
 	if err != nil {
 		return 0, wrapper.Wrap(err, "get speed limits mode failed")
 	}
@@ -83,7 +83,7 @@ func (client *Client) GetGlobalDownloadLimit() (int, error) {
 		return 0, ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(consts.GetGlobalDownloadLimitEndpoint, nil)
+	resp, err := client.GetResponseBody(consts.GetGlobalDownloadLimitEndpoint, nil, nil)
 	if err != nil {
 		return 0, wrapper.Wrap(err, "get global download limit failed")
 	}
@@ -111,7 +111,7 @@ func (client *Client) GetGlobalUploadLimit() (int, error) {
 		return 0, ErrUnauthenticated
 	}
 
-	resp, err := client.GetResponseBody(consts.GetGlobalUploadLimitEndpoint, nil)
+	resp, err := client.GetResponseBody(consts.GetGlobalUploadLimitEndpoint, nil, nil)
 	if err != nil {
 		return 0, wrapper.Wrap(err, "get global upload limit failed")
 	}

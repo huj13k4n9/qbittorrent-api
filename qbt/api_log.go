@@ -21,7 +21,7 @@ func (client *Client) Logs(logLevel uint8, lastKnownID int) ([]MainLog, error) {
 		"critical":      strconv.FormatBool(logLevel&consts.LogCritical != 0),
 	}
 
-	resp, err := client.Get(consts.LogEndpoint, params)
+	resp, err := client.Get(consts.LogEndpoint, params, nil)
 	if err != nil {
 		return nil, wrapper.Wrap(err, "get main logs failed")
 	}
@@ -45,7 +45,7 @@ func (client *Client) PeerLogs(lastKnownID int) ([]PeerLog, error) {
 		"last_known_id": strconv.Itoa(lastKnownID),
 	}
 
-	resp, err := client.Get(consts.PeerLogEndpoint, params)
+	resp, err := client.Get(consts.PeerLogEndpoint, params, nil)
 	if err != nil {
 		return nil, wrapper.Wrap(err, "get peer logs failed")
 	}

@@ -169,7 +169,7 @@ func (client *Client) GetSearchPlugins() ([]SearchPluginResult, error) {
 		return nil, ErrUnauthenticated
 	}
 
-	resp, err := client.Get(consts.SearchPluginsEndpoint, nil)
+	resp, err := client.Get(consts.SearchPluginsEndpoint, nil, nil)
 	if err != nil {
 		return nil, wrapper.Wrap(err, "get search plugins failed")
 	}

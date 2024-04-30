@@ -34,7 +34,7 @@ func NewClient(base string) *Client {
 }
 
 // Get will perform a GET request, with parameters.
-func (client *Client) Get(endpoint string, opts map[string]string) (*http.Response, error) {
+func (client *Client) Get(endpoint string, opts map[string]string, headers map[string]string) (*http.Response, error) {
 	req, err := http.NewRequest(
 		"GET",
 		fmt.Sprintf(URLPattern, client.URL, endpoint),
@@ -47,6 +47,12 @@ func (client *Client) Get(endpoint string, opts map[string]string) (*http.Respon
 
 	// add user-agent header to allow qbittorrent to identify us
 	req.Header.Set("User-Agent", "qBittorrent-API "+Version)
+
+	if headers != nil {
+		for k, v := range headers {
+			req.Header.Set(k, v)
+		}
+	}
 
 	// add optional parameters that the user wants
 	if opts != nil {
@@ -67,8 +73,8 @@ func (client *Client) Get(endpoint string, opts map[string]string) (*http.Respon
 
 // GetResponseBody will perform a GET request with parameters,
 // and directly returns the body of response.
-func (client *Client) GetResponseBody(endpoint string, opts map[string]string) ([]byte, error) {
-	resp, err := client.Get(endpoint, opts)
+func (client *Client) GetResponseBody(endpoint string, opts map[string]string, headers map[string]string) ([]byte, error) {
+	resp, err := client.Get(endpoint, opts, headers)
 	if err != nil {
 		return nil, err
 	}
