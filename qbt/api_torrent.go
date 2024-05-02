@@ -620,7 +620,7 @@ func (client *Client) AddPeers(hashes []string, peers []Peer) error {
 
 	_, err := client.RequestAndHandleError(
 		"POST", consts.AddPeersEndpoint,
-		map[string]string{"hashes": strings.Join(hashes, "|"), "peers": strings.Join(hashes, "|")},
+		map[string]string{"hashes": strings.Join(hashes, "|"), "peers": strings.Join(peerString, "|")},
 		nil, map[string]string{
 			"400":  "none of the supplied peers are valid",
 			"!200": "add peers to torrent(s) failed",
