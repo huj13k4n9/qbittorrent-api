@@ -13,8 +13,8 @@ type Client struct {
 }
 
 type Peer struct {
-	IP   string
-	Port int
+	IP   string `json:"ip"`
+	Port uint16 `json:"port"`
 }
 
 type Category struct {

@@ -41,6 +41,31 @@ type SyncMainData struct {
 	//} `json:"server_state"`
 }
 
+type SyncPeersData struct {
+	RID        int            `json:"rid"`
+	FullUpdate bool           `json:"full_update"`
+	ShowFlags  bool           `json:"show_flags"`
+	Peers      map[string]any `json:"peers"`
+	// Peers Reference: https://github.com/qbittorrent/qBittorrent/blob/05416458db79e050f8500e1d543148ce4cf2ecdb/src/webui/api/synccontroller.cpp#L725
+	//Peers struct {
+	//	IPPort           Peer
+	//	Client           string   `json:"client"`
+	//	PeerIDClient     string   `json:"peer_id_client"`
+	//	Progress         float64  `json:"progress"`
+	//	DownloadSpeed    int      `json:"dl_speed"`
+	//	UploadSpeed      int      `json:"up_speed"`
+	//	TotalDownload    int      `json:"downloaded"`
+	//	TotalUpload      int      `json:"uploaded"`
+	//	ConnectionType   string   `json:"connection"`
+	//	Flags            string   `json:"flags"`
+	//	FlagsDescription string   `json:"flags_desc"`
+	//	Relevance        float64  `json:"relevance"`
+	//	Files            []string `json:"files"`
+	//	CountryCode      string   `json:"country_code"`
+	//	CountryName      string   `json:"country"`
+	//} `json:"peers"`
+}
+
 func (s *SyncMainData) UnmarshalJSON(bytes []byte) error {
 	type Alias SyncMainData
 	aux := &struct {
