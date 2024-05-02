@@ -11,7 +11,7 @@ type SyncMainData struct {
 	CategoriesRemoved []string               `json:"categories_removed"`
 	Tags              []string               `json:"tags"`
 	TagsRemoved       []string               `json:"tags_removed"`
-	ServerState       map[string]interface{} `json:"server_state"`
+	ServerState       map[string]any         `json:"server_state"`
 	//ServerState       struct {
 	//	AllTimeDownload      int    `json:"all_time_dl"`
 	//	AllTimeUpload        int    `json:"all_time_ul"`

@@ -95,7 +95,7 @@ func (client *Client) GetResponseBody(endpoint string, opts map[string]string, h
 
 // Post will perform a POST request with application/x-www-form-urlencoded parameters
 // and custom HTTP headers.
-func (client *Client) Post(endpoint string, opts interface{}, headers map[string]string, contentType string) (*http.Response, error) {
+func (client *Client) Post(endpoint string, opts any, headers map[string]string, contentType string) (*http.Response, error) {
 	var postData *bytes.Buffer
 	typeAsserted := false
 	if opts != nil {
