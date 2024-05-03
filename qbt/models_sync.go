@@ -12,6 +12,7 @@ type SyncMainData struct {
 	Tags              []string               `json:"tags"`
 	TagsRemoved       []string               `json:"tags_removed"`
 	ServerState       map[string]any         `json:"server_state"`
+	// ServerState Reference: https://github.com/yosemiteyss/qbittorrent_api/blob/main/lib/src/v2/sync/dto/server_state.dart
 	//ServerState       struct {
 	//	AllTimeDownload      int    `json:"all_time_dl"`
 	//	AllTimeUpload        int    `json:"all_time_ul"`
@@ -46,7 +47,7 @@ type SyncPeersData struct {
 	FullUpdate bool           `json:"full_update"`
 	ShowFlags  bool           `json:"show_flags"`
 	Peers      map[string]any `json:"peers"`
-	// Peers Reference: https://github.com/qbittorrent/qBittorrent/blob/05416458db79e050f8500e1d543148ce4cf2ecdb/src/webui/api/synccontroller.cpp#L725
+	// Peers Reference: https://github.com/qbittorrent/qBittorrent/blob/master/src/webui/api/synccontroller.cpp#L725
 	//Peers struct {
 	//	IPPort           Peer
 	//	Client           string   `json:"client"`
