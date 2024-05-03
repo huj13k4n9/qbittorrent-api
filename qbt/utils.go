@@ -1,6 +1,7 @@
 package qbt
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
 	"strconv"
@@ -30,6 +31,19 @@ func WriteFile(path string, content []byte, overwrite bool) error {
 	}
 	defer file.Close()
 	_, err = file.Write(content)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func MapToStruct[T interface{}](mapData map[string]any, structData *T) error {
+	bytes, err := json.Marshal(mapData)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(bytes, structData)
 	if err != nil {
 		return err
 	}
