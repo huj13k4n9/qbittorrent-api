@@ -39,6 +39,28 @@ type RSSArticle struct {
 	Other       map[string]any `json:"-"`
 }
 
+type AutoDownloadRule struct {
+	Name                      string   `json:"-"`
+	Enabled                   bool     `json:"enabled"`
+	MustContain               string   `json:"mustContain"`
+	MustNotContain            string   `json:"mustNotContain"`
+	UseRegex                  bool     `json:"useRegex"`
+	EpisodeFilter             string   `json:"episodeFilter"`
+	UseSmartFilter            bool     `json:"smartFilter"`
+	PreviouslyMatchedEpisodes []string `json:"previouslyMatchedEpisodes"`
+	AffectedFeeds             []string `json:"affectedFeeds"`
+	IgnoreDays                int      `json:"ignoreDays"`
+	LastMatch                 string   `json:"lastMatch"`
+	AddPaused                 bool     `json:"addPaused"`
+	AssignedCategory          string   `json:"assignedCategory"`
+	SavePath                  string   `json:"savePath"`
+}
+
+type RuleMatchResult struct {
+	FeedName     string
+	ArticleNames []string
+}
+
 func (r *RSSArticle) UnmarshalJSON(bytes []byte) error {
 	type Alias RSSArticle
 
