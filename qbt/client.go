@@ -2,8 +2,11 @@ package qbt
 
 import (
 	"bytes"
+	"crypto/tls"
+	"errors"
 	"fmt"
 	wrapper "github.com/pkg/errors"
+	"golang.org/x/net/proxy"
 	"golang.org/x/net/publicsuffix"
 	"io"
 	"net/http"
@@ -24,13 +27,61 @@ func NewClient(base string) *Client {
 	}
 
 	c.Jar, _ = cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
-
 	c.http = &http.Client{
 		Jar: c.Jar,
 	}
 
 	c.Authenticated = false
 	return c
+}
+
+func (client *Client) SetProxy(proxyUri string, insecureSkipVerify bool) error {
+	var transport *http.Transport
+
+	parsedUrl, err := url.Parse(proxyUri)
+	if err != nil {
+		return err
+	}
+
+	if parsedUrl.Scheme == "http" || parsedUrl.Scheme == "https" {
+		transport = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: insecureSkipVerify},
+			Proxy:           http.ProxyURL(parsedUrl),
+		}
+	} else if parsedUrl.Scheme == "socks5" {
+		var auth *proxy.Auth
+		if parsedUrl.User != nil {
+			password, _ := parsedUrl.User.Password()
+			auth = &proxy.Auth{
+				User:     parsedUrl.User.Username(),
+				Password: password,
+			}
+		} else {
+			auth = nil
+		}
+
+		socks5, err := proxy.SOCKS5(
+			"tcp",
+			fmt.Sprintf("%s:%s", parsedUrl.Host, parsedUrl.Port()),
+			auth,
+			proxy.Direct,
+		)
+
+		if err != nil {
+			return err
+		}
+
+		transport = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: insecureSkipVerify},
+			Dial:            socks5.Dial,
+		}
+	} else {
+		return errors.New("invalid proxy scheme, only http/https/socks5 are supported")
+	}
+
+	client.http.Transport = transport
+
+	return nil
 }
 
 // Get will perform a GET request, with parameters.
