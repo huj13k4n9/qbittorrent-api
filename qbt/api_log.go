@@ -8,7 +8,7 @@ import (
 )
 
 // Logs get main logs with specified log level and last known log ID.
-func (client *Client) Logs(logLevel uint8, lastKnownID int) ([]MainLog, error) {
+func (client *Client) Logs(logLevel uint8, lastKnownID int) ([]*MainLog, error) {
 	if !client.Authenticated {
 		return nil, ErrUnauthenticated
 	}
@@ -26,7 +26,7 @@ func (client *Client) Logs(logLevel uint8, lastKnownID int) ([]MainLog, error) {
 		return nil, wrapper.Wrap(err, "get main logs failed")
 	}
 
-	var data []MainLog
+	var data []*MainLog
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (client *Client) Logs(logLevel uint8, lastKnownID int) ([]MainLog, error) {
 }
 
 // PeerLogs get peer logs with specified last known log ID.
-func (client *Client) PeerLogs(lastKnownID int) ([]PeerLog, error) {
+func (client *Client) PeerLogs(lastKnownID int) ([]*PeerLog, error) {
 	if !client.Authenticated {
 		return nil, ErrUnauthenticated
 	}
@@ -50,7 +50,7 @@ func (client *Client) PeerLogs(lastKnownID int) ([]PeerLog, error) {
 		return nil, wrapper.Wrap(err, "get peer logs failed")
 	}
 
-	var data []PeerLog
+	var data []*PeerLog
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		return nil, err

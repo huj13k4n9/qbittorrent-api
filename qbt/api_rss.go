@@ -239,7 +239,7 @@ func (client *Client) RefreshRSSItem(path string) error {
 // GetAllAutoDownloadRules method is used to get all auto-downloading
 // rules of RSS module in qBittorrent. For definition of an
 // auto-downloading rule, refer to type AutoDownloadRule.
-func (client *Client) GetAllAutoDownloadRules() ([]AutoDownloadRule, error) {
+func (client *Client) GetAllAutoDownloadRules() ([]*AutoDownloadRule, error) {
 	resp, err := client.RequestAndHandleError(
 		"GET", consts.GetAllAutoDownloadRulesEndpoint,
 		nil, nil,
@@ -250,7 +250,7 @@ func (client *Client) GetAllAutoDownloadRules() ([]AutoDownloadRule, error) {
 	}
 
 	var temp map[string]AutoDownloadRule
-	var data []AutoDownloadRule
+	var data []*AutoDownloadRule
 	err = json.NewDecoder(resp.Body).Decode(&temp)
 	if err != nil {
 		return nil, err
@@ -258,7 +258,7 @@ func (client *Client) GetAllAutoDownloadRules() ([]AutoDownloadRule, error) {
 
 	for k, v := range temp {
 		v.Name = k
-		data = append(data, v)
+		data = append(data, &v)
 	}
 
 	return data, nil
@@ -322,7 +322,7 @@ func (client *Client) RemoveAutoDownloadRule(ruleName string) error {
 // GetRuleMatchingArticles method is used to get all RSS
 // articles matched by a specific rule. Return all matched
 // names of articles, associated with their feed name.
-func (client *Client) GetRuleMatchingArticles(ruleName string) ([]RuleMatchResult, error) {
+func (client *Client) GetRuleMatchingArticles(ruleName string) ([]*RuleMatchResult, error) {
 	resp, err := client.RequestAndHandleError(
 		"GET", consts.MatchArticlesWithRuleEndpoint,
 		map[string]string{"ruleName": ruleName}, nil,
@@ -333,14 +333,14 @@ func (client *Client) GetRuleMatchingArticles(ruleName string) ([]RuleMatchResul
 	}
 
 	var tmp map[string][]string
-	var data []RuleMatchResult
+	var data []*RuleMatchResult
 	err = json.NewDecoder(resp.Body).Decode(&tmp)
 	if err != nil {
 		return nil, err
 	}
 
 	for k, v := range tmp {
-		data = append(data, RuleMatchResult{
+		data = append(data, &RuleMatchResult{
 			FeedName:     k,
 			ArticleNames: v,
 		})

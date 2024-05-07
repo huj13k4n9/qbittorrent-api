@@ -9,23 +9,23 @@ import (
 )
 
 // GetTransferInfo get global transfer info of qBittorrent.
-func (client *Client) GetTransferInfo() (TransferInfo, error) {
+func (client *Client) GetTransferInfo() (*TransferInfo, error) {
 	if !client.Authenticated {
-		return TransferInfo{}, ErrUnauthenticated
+		return nil, ErrUnauthenticated
 	}
 
 	resp, err := client.Get(consts.GetGlobalTransferInfoEndpoint, nil, nil)
 	if err != nil {
-		return TransferInfo{}, wrapper.Wrap(err, "get transfer info failed")
+		return nil, wrapper.Wrap(err, "get transfer info failed")
 	}
 
 	var data TransferInfo
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
-		return TransferInfo{}, err
+		return nil, err
 	}
 
-	return data, nil
+	return &data, nil
 }
 
 // SpeedLimitsMode The response is 1 if alternative speed limits are enabled, 0 otherwise.
@@ -174,7 +174,7 @@ func (client *Client) SetGlobalUploadLimit(limit int) error {
 //
 // Multiple peers are separated by a pipe `|`. Each peer is a
 // colon-separated `host:port`.
-func (client *Client) BanPeers(peers []Peer) error {
+func (client *Client) BanPeers(peers []*Peer) error {
 	var peerStrings []string
 
 	for _, peer := range peers {

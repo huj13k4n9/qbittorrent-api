@@ -39,20 +39,20 @@ func (client *Client) APIVersion() (string, error) {
 }
 
 // GetBuildInfo get qBittorrent build info
-func (client *Client) GetBuildInfo() (BuildInfo, error) {
+func (client *Client) GetBuildInfo() (*BuildInfo, error) {
 	if !client.Authenticated {
-		return BuildInfo{}, ErrUnauthenticated
+		return nil, ErrUnauthenticated
 	}
 
 	resp, err := client.Get(consts.BuildInfoEndpoint, nil, nil)
 	if err != nil {
-		return BuildInfo{}, wrapper.Wrap(err, "get build info failed")
+		return nil, wrapper.Wrap(err, "get build info failed")
 	}
 
-	data := BuildInfo{}
+	data := &BuildInfo{}
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
-		return BuildInfo{}, err
+		return nil, err
 	}
 
 	return data, nil
@@ -73,28 +73,28 @@ func (client *Client) Shutdown() error {
 }
 
 // GetPreferences get qBittorrent preferences
-func (client *Client) GetPreferences() (Preferences, error) {
+func (client *Client) GetPreferences() (*Preferences, error) {
 	if !client.Authenticated {
-		return Preferences{}, ErrUnauthenticated
+		return nil, ErrUnauthenticated
 	}
 
 	resp, err := client.Get(consts.GetPreferencesEndpoint, nil, nil)
 	if err != nil {
-		return Preferences{}, wrapper.Wrap(err, "get preferences failed")
+		return nil, wrapper.Wrap(err, "get preferences failed")
 	}
 
-	data := Preferences{}
+	data := &Preferences{}
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
-		return Preferences{}, err
+		return nil, err
 	}
 
 	return data, nil
 }
 
 // SetPreferences set qBittorrent preferences
-func (client *Client) SetPreferences(data Preferences) error {
-	bytes, err := json.Marshal(data)
+func (client *Client) SetPreferences(data *Preferences) error {
+	bytes, err := json.Marshal(*data)
 	if err != nil {
 		return err
 	}

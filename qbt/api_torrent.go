@@ -241,7 +241,7 @@ func BuildAddTorrentsQuery(req *AddTorrentParams, writer *multipart.Writer) erro
 // If you want to request directly with no parameters, pass
 // options with nil. Otherwise, construct your own TorrentListParams
 // data is needed.
-func (client *Client) Torrents(options *TorrentListParams) ([]TorrentInfo, error) {
+func (client *Client) Torrents(options *TorrentListParams) ([]*TorrentInfo, error) {
 	var params map[string]string
 	if options == nil {
 		params = BuildTorrentListQuery(&TorrentListParams{
@@ -268,7 +268,7 @@ func (client *Client) Torrents(options *TorrentListParams) ([]TorrentInfo, error
 		return nil, err
 	}
 
-	var data []TorrentInfo
+	var data []*TorrentInfo
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		return nil, err
@@ -280,26 +280,26 @@ func (client *Client) Torrents(options *TorrentListParams) ([]TorrentInfo, error
 // TorrentProperties method is used to get generic properties of specified torrent.
 //
 // Note: -1 is returned if the type of the property is integer but its value is not known.
-func (client *Client) TorrentProperties(hash string) (TorrentProperties, error) {
+func (client *Client) TorrentProperties(hash string) (*TorrentProperties, error) {
 	resp, err := client.RequestAndHandleError(
 		"GET", consts.GetTorrentPropertiesEndpoint, map[string]string{"hash": hash}, nil,
 		map[string]string{"404": "hash is invalid", "!200": "get torrents properties failed"})
 
 	if err != nil {
-		return TorrentProperties{}, err
+		return nil, err
 	}
 
 	var data TorrentProperties
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
-		return TorrentProperties{}, err
+		return nil, err
 	}
 
-	return data, nil
+	return &data, nil
 }
 
 // TorrentTrackers method is used to get trackers of specified torrent.
-func (client *Client) TorrentTrackers(hash string) ([]Tracker, error) {
+func (client *Client) TorrentTrackers(hash string) ([]*Tracker, error) {
 	resp, err := client.RequestAndHandleError(
 		"GET", consts.GetTorrentTrackersEndpoint, map[string]string{"hash": hash}, nil,
 		map[string]string{"404": "hash is invalid", "!200": "get torrent trackers failed"})
@@ -308,7 +308,7 @@ func (client *Client) TorrentTrackers(hash string) ([]Tracker, error) {
 		return nil, err
 	}
 
-	var data []Tracker
+	var data []*Tracker
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		return nil, err
@@ -350,7 +350,7 @@ func (client *Client) TorrentWebSeeds(hash string) ([]string, error) {
 //
 // Return a list of TorrentFileProperties, where each element contains info
 // about one file.
-func (client *Client) TorrentContents(hash string, indexes []int) ([]TorrentFileProperties, error) {
+func (client *Client) TorrentContents(hash string, indexes []int) ([]*TorrentFileProperties, error) {
 	params := make(map[string]string)
 	params["hash"] = hash
 	if indexes != nil && len(indexes) != 0 {
@@ -371,7 +371,7 @@ func (client *Client) TorrentContents(hash string, indexes []int) ([]TorrentFile
 		return nil, err
 	}
 
-	var data []TorrentFileProperties
+	var data []*TorrentFileProperties
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		return nil, err
@@ -612,7 +612,7 @@ func (client *Client) EditTrackersToTorrent(hash string, origUrl string, newUrl 
 }
 
 // AddPeers method is used to add peers to specified torrent(s).
-func (client *Client) AddPeers(hashes []string, peers []Peer) error {
+func (client *Client) AddPeers(hashes []string, peers []*Peer) error {
 	var peerString []string
 	for _, peer := range peers {
 		peerString = append(peerString, peer.String())
@@ -915,7 +915,7 @@ func (client *Client) RemoveTorrentTags(hashes []string, tags []string) error {
 }
 
 // Categories method is used to get all categories in qBittorrent.
-func (client *Client) Categories() ([]Category, error) {
+func (client *Client) Categories() ([]*Category, error) {
 	resp, err := client.RequestAndHandleError(
 		"GET", consts.GetAllCategoriesEndpoint, nil, nil,
 		map[string]string{
@@ -927,21 +927,21 @@ func (client *Client) Categories() ([]Category, error) {
 	}
 
 	var temp map[string]Category
-	var data []Category
+	var data []*Category
 	err = json.NewDecoder(resp.Body).Decode(&temp)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, v := range temp {
-		data = append(data, v)
+		data = append(data, &v)
 	}
 
 	return data, nil
 }
 
 // AddCategory method is used to add a category to qBittorrent.
-func (client *Client) AddCategory(category Category) error {
+func (client *Client) AddCategory(category *Category) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.AddNewCategoryEndpoint, map[string]string{
 			"category": category.Name,
@@ -961,7 +961,7 @@ func (client *Client) AddCategory(category Category) error {
 }
 
 // EditCategory method is used to edit a category to qBittorrent.
-func (client *Client) EditCategory(category Category) error {
+func (client *Client) EditCategory(category *Category) error {
 	_, err := client.RequestAndHandleError(
 		"POST", consts.EditCategoryEndpoint, map[string]string{
 			"category": category.Name,
@@ -981,7 +981,7 @@ func (client *Client) EditCategory(category Category) error {
 }
 
 // RemoveCategories method is used to remove categories in qBittorrent.
-func (client *Client) RemoveCategories(categories []Category) error {
+func (client *Client) RemoveCategories(categories []*Category) error {
 	categoryString := make([]string, len(categories))
 	for _, category := range categories {
 		categoryString = append(categoryString, category.Name)

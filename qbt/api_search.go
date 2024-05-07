@@ -74,7 +74,7 @@ func (client *Client) StopSearch(id int) error {
 // Argument `id` is optional. `id` will be ignored in
 // request when it's set to 0, and the server should return
 // status of all search tasks.
-func (client *Client) GetSearchStatus(id int) ([]SearchStatus, error) {
+func (client *Client) GetSearchStatus(id int) ([]*SearchStatus, error) {
 	params := make(map[string]string)
 	if id != 0 {
 		params["id"] = strconv.Itoa(id)
@@ -91,7 +91,7 @@ func (client *Client) GetSearchStatus(id int) ([]SearchStatus, error) {
 		return nil, err
 	}
 
-	var result []SearchStatus
+	var result []*SearchStatus
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return nil, err
@@ -107,7 +107,7 @@ func (client *Client) GetSearchStatus(id int) ([]SearchStatus, error) {
 // be ignored in request when it's set to 0 or negative (means
 // no limits on results). `offset` will be ignored in request
 // when it's set to 0 (means no offset in results).
-func (client *Client) GetSearchResults(id int, limit int, offset int) (SearchResponse, error) {
+func (client *Client) GetSearchResults(id int, limit int, offset int) (*SearchResponse, error) {
 	params := make(map[string]string)
 	params["id"] = strconv.Itoa(id)
 	if limit > 0 {
@@ -127,16 +127,16 @@ func (client *Client) GetSearchResults(id int, limit int, offset int) (SearchRes
 		})
 
 	if err != nil {
-		return SearchResponse{}, err
+		return nil, err
 	}
 
 	var result SearchResponse
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
-		return SearchResponse{}, err
+		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // DeleteSearch is used to delete a search task created
@@ -164,7 +164,7 @@ func (client *Client) DeleteSearch(id int) error {
 // It returns a slice of SearchPluginResult, which contains
 // the details of each plugin, and an error if there is any
 // problem during the retrieval process.
-func (client *Client) GetSearchPlugins() ([]SearchPluginResult, error) {
+func (client *Client) GetSearchPlugins() ([]*SearchPluginResult, error) {
 	if !client.Authenticated {
 		return nil, ErrUnauthenticated
 	}
@@ -174,7 +174,7 @@ func (client *Client) GetSearchPlugins() ([]SearchPluginResult, error) {
 		return nil, wrapper.Wrap(err, "get search plugins failed")
 	}
 
-	var data []SearchPluginResult
+	var data []*SearchPluginResult
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		return nil, err
