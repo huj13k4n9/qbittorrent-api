@@ -17,8 +17,12 @@ import (
 )
 
 // NewClient creates a new client and is used to perform future requests.
-func NewClient(base string) *Client {
+func NewClient(base string) (*Client, error) {
 	c := &Client{}
+
+	if !strings.HasPrefix(base, "https://") && !strings.HasPrefix(base, "http://") {
+		return nil, errors.New("invalid base URL")
+	}
 
 	if strings.HasSuffix(base, "/") {
 		c.URL = base[:len(base)-1]
@@ -32,7 +36,7 @@ func NewClient(base string) *Client {
 	}
 
 	c.Authenticated = false
-	return c
+	return c, nil
 }
 
 func (client *Client) SetProxy(proxyUri string, insecureSkipVerify bool) error {
