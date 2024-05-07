@@ -71,9 +71,14 @@ func (client *Client) SetProxy(proxyUri string, insecureSkipVerify bool) error {
 			return err
 		}
 
-		transport = &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: insecureSkipVerify},
-			Dial:            socks5.Dial,
+		if contextDialer, ok := socks5.(proxy.ContextDialer); ok {
+			dialContext := contextDialer.DialContext
+			transport = &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: insecureSkipVerify},
+				DialContext:     dialContext,
+			}
+		} else {
+			return errors.New("failed type assertion to DialContext")
 		}
 	} else {
 		return errors.New("invalid proxy scheme, only http/https/socks5 are supported")
